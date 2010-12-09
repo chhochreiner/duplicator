@@ -1,0 +1,23 @@
+#=================
+eclipse-workspace
+#=================
+.metadata
+
+#=================
+#eclipse-project
+#=================
+*.project
+*.classpath
+*.settings
+
+#=================
+#maven-files
+#=================
+*target
+*bin
+
+#================
+#Mac OS X hidden files/folders
+#================
+.DS_Store
+
