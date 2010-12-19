@@ -1,0 +1,28 @@
+<html xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.5-strict.dtd" >
+<head>
+	<title>Profileduplicator</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="style.css" />	
+</head>
+<body wicket:id="body">
+<div id="header">
+		<div id="mainMenu">
+			<ul>
+				<li class="userdata">
+					<a id="mainMenuUserData" href="#" wicket:id="userdata">
+						<wicket:message key="userData">[UserData]</wicket:message>
+					</a>
+				</li>
+				<li  class="templategenerator">
+					<a id="mainMenuTemplateGenerator" href="#" wicket:id="templategenerator">
+						<wicket:message key="templateGenerator">[TemplateGenerator]</wicket:message>
+					</a>
+				</li>
+			</ul>
+		</div>
+</div>
+<div id="content">
+<wicket:child />
+</div>
+
+</body>
+</html>

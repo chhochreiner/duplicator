@@ -8,9 +8,9 @@ public class WicketApplication extends WebApplication
 	{
 	}
 	
-	public Class<HomePage> getHomePage()
+	public Class<BasePage> getHomePage()
 	{
-		return HomePage.class;
+		return BasePage.class;
 	}
 
 }
