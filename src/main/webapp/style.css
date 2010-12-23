@@ -24,7 +24,7 @@ font: 76%/170% Verdana, sans-serif;
 
 #mainMenu li {
 	float:left;
-    padding: 0 20 px;
+    padding: 0 10 px;
 }
 
 #mainMenu a {
@@ -45,11 +45,159 @@ font: 76%/170% Verdana, sans-serif;
 }
 
 
-#userdata li.userdata a,
-#templategenerator li.templategenerator a {
+#profiledata li.profiledata a,
+#templategenerator li.templategenerator a,
+#home li.home a {
 	background-color: #444444;
     border-color: #444444;
     padding: 3 10 px;    
 }
+
+.content fieldset, fieldset fieldset, .info, .success, .warning, .error {
+	-moz-border-radius: 5px;
+	-khtml-border-radius: 5px;
+    border-radius: 5px;
+}
+
+form{
+    max-width: 700px;
+    margin: 20 px;
+    border-width: 2px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border-color: grey;
+    border-style: solid;
+    padding: 5px;
+}
+
+fieldset{
+    margin: 5 px;
+}
+
+.formSubmit {
+	margin-bottom:15px;
+	margin-top:10px;
+	text-align:center;
+}
+
+.success, .warning, .error, .info {
+	margin-bottom:20px;
+	padding:7px 10px 7px 10px;
+}
+
+.success {
+	background-color:#EEFFEE;
+	border-color:#009900;
+	color:#009900;
+}
+
+.success a, .success a:hover {
+	color:#333333;
+}
+
+.warning {
+	background-color:#FFFFDD;
+	border-color:#666600;
+	color:#666600;
+}
+
+.warning a, .warning a:hover {
+	color:#333333;
+}
+
+.error {
+	background-color:#FFEEEE;
+	border-color:#CC0000;
+	color:#CC0000;
+}
+
+.error a, .error a:hover {
+	color:#333333;
+}
+
+.info {
+	background-color:#DDEEFF;
+	border-color:#0066FF;
+	color:#0066FF;
+}
+
+.info a, .info a:hover {
+	color:#333333;
+}
+
+.inputFieldError ul {
+	margin:0px;
+}
+
+.inputFieldError li {
+	margin:0px;
+    list-style: none;
+}
+
+.inputText {
+	border:1px #999999 solid;
+}
+
+
+.formField {
+	padding: 0;
+    margin: 3 px;
+    
+}
+
+.formElement .formField {
+	margin-left: 150px;
+}
+
+fieldset .formElement .formField {
+	margin-left: 110px;
+}
+
+
+.formFieldLabel {
+	text-align: right;
+	float: left;
+	width: 100px;
+}
+
+fieldset .formFieldLabel {
+	width: 100px;
+}
+
+.formField label {
+	font-size: 1em !important;
+	display: block;
+}
+
+.formFieldLabel {
+	text-align: right;
+	float: left;
+	width: 200px;
+}
+
+.formGroup {
+	min-height: 0;
+	margin: 5px 0 3px 0;
+}
+
+.formGroup .formGroupLabel {
+	text-align: right;
+	float: left;
+	width: 200px;
+}
+
+fieldset .formGroup .formGroupLabel {
+	width: 187px;
+}
+
+
+
+.feedbackPanelERROR { 
+	color: red;
+}
+
+
+
 
 
