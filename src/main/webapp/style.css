@@ -170,6 +170,10 @@ fieldset .formFieldLabel {
 	display: block;
 }
 
+.tableLabel {
+	font-size: 0.8em;
+}
+
 .formFieldLabel {
 	text-align: right;
 	float: left;
