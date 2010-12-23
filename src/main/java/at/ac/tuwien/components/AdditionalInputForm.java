@@ -12,12 +12,6 @@ import org.apache.wicket.markup.html.list.ListView;
 
 import at.ac.tuwien.domain.KeyValueEntry;
 
-/**
- * Seperated form to handle ajax request on adding additional fields (or
- * removing them). additional fields contain additional key/values pairs for a
- * signal
- * 
- */
 public class AdditionalInputForm extends Form<Void> {
 
     private static final long serialVersionUID = 5843313862787254558L;
@@ -25,14 +19,14 @@ public class AdditionalInputForm extends Form<Void> {
     private ListView<KeyValueEntry> elementView;
     private List<KeyValueEntry> entries;
 
-    /**
-     * 
-     * @param id for identification in wicket
-     */
-    public AdditionalInputForm(final String id) {
+    public AdditionalInputForm(final String id, ArrayList<KeyValueEntry> data) {
         super(id);
 
-        this.entries = new ArrayList<KeyValueEntry>();
+        if (data != null) {
+            this.entries = data;
+        } else {
+            this.entries = new ArrayList<KeyValueEntry>();
+        }
 
         setOutputMarkupId(true);
 

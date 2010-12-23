@@ -34,7 +34,7 @@ public class AddProfile extends BasePage {
             @Override
             public void setupForm() {
 
-                additionalFields = new AdditionalInputForm("additionalForm");
+                additionalFields = new AdditionalInputForm("additionalForm", null);
                 add(additionalFields);
 
                 add(prenameField, surnameField, emailField, passwordField);
