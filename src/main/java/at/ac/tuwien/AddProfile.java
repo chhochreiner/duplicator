@@ -1,19 +1,31 @@
 package at.ac.tuwien;
 
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.panel.ComponentFeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
 
 import at.ac.tuwien.components.AdditionalInputForm;
 import at.ac.tuwien.components.FormTemplate;
+import at.ac.tuwien.domain.GraphDB;
+import at.ac.tuwien.domain.KeyValueEntry;
+import at.ac.tuwien.domain.Profile;
+import at.ac.tuwien.domain.impl.ProfileImpl;
 
 public class AddProfile extends BasePage {
 
     private Form<Void> profileDataForm;
-    private Form<Void> additionalFields;
+    private AdditionalInputForm additionalFields;
+
+    private Profile profile;
+    private GraphDatabaseService database;
 
     private Model<String> prenameModel = new Model<String>();
     private Model<String> surnameModel = new Model<String>();
@@ -46,8 +58,29 @@ public class AddProfile extends BasePage {
 
             @Override
             public void saveAction() {
-                // generate new User object
 
+                database = GraphDB.getDatabase();
+                Transaction tx = database.beginTx();
+                try {
+                    Node node = database.createNode();
+
+                    profile = new ProfileImpl(node);
+                    profile.setEmail(emailField.getInput());
+                    profile.setPassword(passwordField.getInput());
+                    profile.setPrename(prenameField.getInput());
+                    profile.setSurname(surnameField.getInput());
+
+                    List<KeyValueEntry> additional = additionalFields.getAdditionalValues();
+
+                    for (KeyValueEntry entry : additional) {
+                        profile.setValue(entry.getKey(), entry.getValue());
+                    }
+                    tx.success();
+
+                } finally {
+                    tx.finish();
+
+                }
             }
 
             @Override

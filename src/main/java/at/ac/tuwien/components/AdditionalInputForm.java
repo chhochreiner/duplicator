@@ -43,9 +43,6 @@ public class AdditionalInputForm extends Form<Void> {
         this.elementView.setOutputMarkupId(true);
         add(this.elementView);
 
-        /**
-         * adds additional key-value textfields
-         */
         add(new AjaxButton("addField", this) {
 
             private static final long serialVersionUID = -6012822316820493832L;
@@ -64,9 +61,6 @@ public class AdditionalInputForm extends Form<Void> {
 
         });
 
-        /**
-         * removes additional key-value textfields
-         */
         add(new AjaxButton("removeField", this) {
 
             private static final long serialVersionUID = -6012822316820493833L;
