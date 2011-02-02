@@ -1,6 +1,7 @@
 package at.ac.tuwien.service.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -17,6 +18,7 @@ public class DBServiceImpl implements DBService {
     @SpringBean(name = "graphDbService")
     public GraphDatabaseService graphDbService;
 
+    @Override
     public void addProfile(String prename, String surname, String password, String email,
             List<KeyValueEntry> additionalValues) {
         Transaction tx = graphDbService.beginTx();
@@ -28,6 +30,8 @@ public class DBServiceImpl implements DBService {
             profile.setPassword(password);
             profile.setPrename(prename);
             profile.setSurname(surname);
+
+            profile.setValue("UUID", UUID.randomUUID().toString());
 
             List<KeyValueEntry> additional = additionalValues;
 

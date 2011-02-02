@@ -1,6 +1,10 @@
 package at.ac.tuwien;
 
+import java.util.Date;
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.extensions.yui.calendar.DateField;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.RequiredTextField;
@@ -11,6 +15,7 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
 
 import at.ac.tuwien.components.AdditionalInputForm;
 import at.ac.tuwien.components.FormTemplate;
+import at.ac.tuwien.domain.KeyValueEntry;
 import at.ac.tuwien.service.DBService;
 
 public class AddProfile extends BasePage {
@@ -27,6 +32,7 @@ public class AddProfile extends BasePage {
     private Model<String> surnameModel = new Model<String>("asd");
     private Model<String> emailModel = new Model<String>("asd@asd.at");
     private Model<String> passwordModel = new Model<String>("asd");
+    private Model<Date> birthdayModel = new Model<Date>();
 
     public AddProfile() {
         body.add(new AttributeModifier("id", true, new Model<String>("profiledata")));
@@ -35,6 +41,7 @@ public class AddProfile extends BasePage {
         final FormComponent<String> surnameField = new RequiredTextField<String>("surname", surnameModel);
         final FormComponent<String> emailField = new RequiredTextField<String>("email", emailModel);
         final FormComponent<String> passwordField = new RequiredTextField<String>("password", passwordModel);
+        final DateField birthday = new DateField("birthday", birthdayModel);
 
         profileDataForm = new FormTemplate("profileDataForm") {
             private static final long serialVersionUID = -3481033707062528941L;
@@ -45,17 +52,25 @@ public class AddProfile extends BasePage {
                 additionalFields = new AdditionalInputForm("additionalForm", null);
                 add(additionalFields);
 
-                add(prenameField, surnameField, emailField, passwordField);
+                add(prenameField, surnameField, emailField, passwordField, birthday);
                 add(new ComponentFeedbackPanel("prenameErrors", prenameField));
                 add(new ComponentFeedbackPanel("surnameErrors", surnameField));
                 add(new ComponentFeedbackPanel("emailErrors", emailField));
                 add(new ComponentFeedbackPanel("passwordErrors", passwordField));
+                add(new ComponentFeedbackPanel("birthdayErrors", birthday));
             }
 
             @Override
             public void saveAction() {
+
+                List<KeyValueEntry> values = additionalFields.getAdditionalValues();
+
+                if (birthday.getModel() != null) {
+                    values.add(new KeyValueEntry("birthday", birthday.getDate().toString()));
+                }
+
                 dbService.addProfile(prenameModel.getObject(), surnameModel.getObject(), passwordModel.getObject(),
-                        emailModel.getObject(), additionalFields.getAdditionalValues());
+                        emailModel.getObject(), values);
             }
 
             @Override
@@ -65,6 +80,7 @@ public class AddProfile extends BasePage {
 
             @Override
             public void setupValidator() {
+                birthday.setRequired(true);
                 emailField.add(EmailAddressValidator.getInstance());
             }
 
@@ -74,16 +90,17 @@ public class AddProfile extends BasePage {
                 surnameModel = new Model<String>();
                 passwordModel = new Model<String>();
                 emailModel = new Model<String>();
+                birthdayModel = new Model<Date>();
 
                 prenameField.setModel(prenameModel);
                 surnameField.setModel(surnameModel);
                 passwordField.setModel(passwordModel);
                 emailField.setModel(emailModel);
+                birthday.setModel(birthdayModel);
             }
 
         };
 
         body.add(profileDataForm);
     }
-
 }

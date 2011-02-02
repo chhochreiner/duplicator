@@ -19,6 +19,11 @@ public class KeyValueEntry implements Serializable {
         super();
     }
 
+    public KeyValueEntry(String key, String value) {
+        setKey(key);
+        setValue(value);
+    }
+
     public String getKey() {
         return this.key.getObject();
     }
