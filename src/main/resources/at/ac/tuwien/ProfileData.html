@@ -11,23 +11,19 @@
 
 </div>
 
+
 <table>
-<tr><th>Name</th><th>actions</th></tr>
-<tr><td>User 1</td><td>show</td></tr>
-<tr><td>User 2</td><td>show</td></tr>
-<tr><td>User 3</td><td>show</td></tr>
-<tr><td>User 4</td><td>show</td></tr>
-<tr><td>User 5</td><td>show</td></tr>
-<tr><td>User 6</td><td>show</td></tr>
-<tr><td>User 7</td><td>show</td></tr>
-<tr><td>User 8</td><td>show</td></tr>
-<tr><td>User 9</td><td>show</td></tr>
-<tr><td>User 10</td><td>show</td></tr>
-<tr><td>User 11</td><td>show</td></tr>
-<tr><td>User 12</td><td>show</td></tr>
-<tr><td>User 13</td><td>show</td></tr>
-<tr><td>User 14</td><td>show</td></tr>
+	<tr><th><wicket:message key="name">[Name]</wicket:message></th><th><wicket:message key="email">[email]</wicket:message></th></tr>
+  <tr wicket:id="profilelist">
+    <td><span wicket:id="name"></span></td>
+    <td><span wicket:id="email"></span></td>
+    <td><a id="mainMenuProfileData" href="#" wicket:id="action">
+		<wicket:message key="detailPage">[detailPage]</wicket:message>
+	</a></td>
+  </tr>
 </table>
+
+
 </wicket:extend>
 </body>
 </html>

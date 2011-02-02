@@ -1,5 +1,6 @@
 package at.ac.tuwien.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -7,6 +8,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.index.IndexService;
 
 import at.ac.tuwien.domain.KeyValueEntry;
 import at.ac.tuwien.domain.Profile;
@@ -17,6 +19,11 @@ public class DBServiceImpl implements DBService {
 
     @SpringBean(name = "graphDbService")
     public GraphDatabaseService graphDbService;
+
+    @SpringBean(name = "indexService")
+    private IndexService indexService;
+
+    private static final String INDEX = "UUID";
 
     @Override
     public void addProfile(String prename, String surname, String password, String email,
@@ -38,15 +45,35 @@ public class DBServiceImpl implements DBService {
             for (KeyValueEntry entry : additional) {
                 profile.setValue(entry.getKey(), entry.getValue());
             }
+
+            indexService.index(node, INDEX, profile.getValue("UUID"));
+
             tx.success();
 
         } finally {
             tx.finish();
-
         }
+    }
+
+    @Override
+    public List<Profile> getProfiles() {
+        List<Profile> profiles = new ArrayList<Profile>();
+
+        for (Node node : graphDbService.getAllNodes()) {
+            if (node.hasProperty("UUID")) {
+                profiles.add(new ProfileImpl(node));
+            }
+        }
+
+        return profiles;
     }
 
     public void setGraphDbService(GraphDatabaseService graphDbService) {
         this.graphDbService = graphDbService;
     }
+
+    public void setIndexService(IndexService indexService) {
+        this.indexService = indexService;
+    }
+
 }
