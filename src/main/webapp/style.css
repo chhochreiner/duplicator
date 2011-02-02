@@ -4,41 +4,38 @@ font: 76%/170% Verdana, sans-serif;
 }
 
 #header {
+    position:fixed;
+    top:0px;
+    left:-1px;
+    padding: 10px;
     width: 100%;
-}
-
-#mainMenu {
-    display: table;
-	padding:10px 5px 10px;
-	vertical-align:top;
-	width:100%;
-    margin: -10 px;
     background-color: black;
+    color: white;
 }
 
-#mainMenu ul {
+#header ul {
 	list-style:none;
 	margin:0;
 }
 
 
-#mainMenu li {
+#header li {
 	float:left;
     padding: 0 10 px;
 }
 
-#mainMenu a {
+#header a {
     border-width: 1px;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     border-radius: 10px;
-    padding: 0 10 px;
+    padding: 0 px 10 px;
     color: white;
     text-decoration: none;
 }
 
 
-#mainMenu a:hover {
+#header a:hover {
 	background-color: #444444;
     border-color: #444444;
     padding: 3 10 px;
@@ -57,6 +54,11 @@ font: 76%/170% Verdana, sans-serif;
 	-moz-border-radius: 5px;
 	-khtml-border-radius: 5px;
     border-radius: 5px;
+}
+
+#content{
+padding-top:30px;
+padding-left:5px;
 }
 
 form{
@@ -203,5 +205,14 @@ fieldset .formGroup .formGroupLabel {
 
 
 
-
+#footer {
+    position:fixed;
+    bottom:0px;
+    left:-1px;
+    padding-bottom:1em;
+    text-align: center;
+    width: 100%;
+    background-color: black;
+    color: white;
+}
 

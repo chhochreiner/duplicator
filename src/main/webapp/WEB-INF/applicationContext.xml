@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<bean id="wicketApplication" class="at.ac.tuwien.Profileduplicator"/>
+
+	<!-- Beans -->
+	<bean id="graphDbService" class="org.neo4j.kernel.EmbeddedGraphDatabase"
+		init-method="enableRemoteShell" destroy-method="shutdown">
+		<constructor-arg index="0" value="target/neo4j-db" />
+	</bean>
+	<bean id="indexService" class="org.neo4j.index.lucene.LuceneIndexService"
+		destroy-method="shutdown">
+		<constructor-arg index="0" ref="graphDbService" />
+	</bean>
+	
+	<bean id="DBService" class="at.ac.tuwien.service.impl.DBServiceImpl">
+		<property name="graphDbService" ref="graphDbService" />
+	</bean>
+
+
+</beans>

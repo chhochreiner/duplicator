@@ -29,7 +29,7 @@ public class ProfileImpl implements Profile {
     }
 
     public void setSurname(String surname) {
-        underlyingNode.setProperty(KEY_PRENAME, surname);
+        underlyingNode.setProperty(KEY_SURNAME, surname);
     }
 
     public String getPassword() {

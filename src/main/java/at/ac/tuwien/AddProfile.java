@@ -1,44 +1,40 @@
 package at.ac.tuwien;
 
-import java.util.List;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.panel.ComponentFeedbackPanel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Transaction;
 
 import at.ac.tuwien.components.AdditionalInputForm;
 import at.ac.tuwien.components.FormTemplate;
-import at.ac.tuwien.domain.GraphDB;
-import at.ac.tuwien.domain.KeyValueEntry;
-import at.ac.tuwien.domain.Profile;
-import at.ac.tuwien.domain.impl.ProfileImpl;
+import at.ac.tuwien.service.DBService;
 
 public class AddProfile extends BasePage {
+
+    private static final long serialVersionUID = 7734710518718389158L;
+
+    @SpringBean(name = "DBService")
+    private DBService dbService;
 
     private Form<Void> profileDataForm;
     private AdditionalInputForm additionalFields;
 
-    private Profile profile;
-    private GraphDatabaseService database;
-
-    private Model<String> prenameModel = new Model<String>();
-    private Model<String> surnameModel = new Model<String>();
-    private Model<String> emailModel = new Model<String>();
-    private Model<String> passwordModel = new Model<String>();
+    private Model<String> prenameModel = new Model<String>("asd");
+    private Model<String> surnameModel = new Model<String>("asd");
+    private Model<String> emailModel = new Model<String>("asd@asd.at");
+    private Model<String> passwordModel = new Model<String>("asd");
 
     public AddProfile() {
         body.add(new AttributeModifier("id", true, new Model<String>("profiledata")));
 
-        final RequiredTextField<String> prenameField = new RequiredTextField<String>("prename", prenameModel);
-        final RequiredTextField<String> surnameField = new RequiredTextField<String>("surname", surnameModel);
-        final RequiredTextField<String> emailField = new RequiredTextField<String>("email", emailModel);
-        final RequiredTextField<String> passwordField = new RequiredTextField<String>("password", passwordModel);
+        final FormComponent<String> prenameField = new RequiredTextField<String>("prename", prenameModel);
+        final FormComponent<String> surnameField = new RequiredTextField<String>("surname", surnameModel);
+        final FormComponent<String> emailField = new RequiredTextField<String>("email", emailModel);
+        final FormComponent<String> passwordField = new RequiredTextField<String>("password", passwordModel);
 
         profileDataForm = new FormTemplate("profileDataForm") {
             private static final long serialVersionUID = -3481033707062528941L;
@@ -58,29 +54,8 @@ public class AddProfile extends BasePage {
 
             @Override
             public void saveAction() {
-
-                database = GraphDB.getDatabase();
-                Transaction tx = database.beginTx();
-                try {
-                    Node node = database.createNode();
-
-                    profile = new ProfileImpl(node);
-                    profile.setEmail(emailField.getInput());
-                    profile.setPassword(passwordField.getInput());
-                    profile.setPrename(prenameField.getInput());
-                    profile.setSurname(surnameField.getInput());
-
-                    List<KeyValueEntry> additional = additionalFields.getAdditionalValues();
-
-                    for (KeyValueEntry entry : additional) {
-                        profile.setValue(entry.getKey(), entry.getValue());
-                    }
-                    tx.success();
-
-                } finally {
-                    tx.finish();
-
-                }
+                dbService.addProfile(prenameModel.getObject(), surnameModel.getObject(), passwordModel.getObject(),
+                        emailModel.getObject(), additionalFields.getAdditionalValues());
             }
 
             @Override
@@ -110,4 +85,5 @@ public class AddProfile extends BasePage {
 
         body.add(profileDataForm);
     }
+
 }
