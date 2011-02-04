@@ -1,6 +1,7 @@
 package at.ac.tuwien.service;
 
 import java.util.List;
+import java.util.Map;
 
 import at.ac.tuwien.domain.KeyValueEntry;
 import at.ac.tuwien.domain.Profile;
@@ -11,4 +12,6 @@ public interface DBService {
             List<KeyValueEntry> additionalValues);
 
     public List<Profile> getProfiles();
+
+    public Map<String, Object> fetchProfileData(String uuid);
 }

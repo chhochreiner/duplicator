@@ -1,0 +1,39 @@
+<html xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.5-strict.dtd" >
+<head>
+	<title>Profileduplicator</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="style.css" />	
+</head>
+<body wicket:id="body">
+<div id="header">
+			<ul>
+				<li class="home">
+					<a id="mainMenuHome" href="#" wicket:id="home">
+						<wicket:message key="home">[Home]</wicket:message>
+					</a>
+				</li>
+				<li class="profiledata">
+					<a id="mainMenuProfileData" href="#" wicket:id="profiledata">
+						<wicket:message key="profileData">[ProfileData]</wicket:message>
+					</a>
+				</li>
+				<li  class="templategenerator">
+					<a id="mainMenuTemplateGenerator" href="#" wicket:id="templategenerator">
+						<wicket:message key="templateGenerator">[TemplateGenerator]</wicket:message>
+					</a>
+				</li>
+			</ul>
+</div>
+<div id="content">
+
+<h1>Error</h1>
+
+<div wicket:id="feedback">[Feedback Panel]</div>
+
+
+<wicket:child />
+</div>
+<div id="footer">
+Christoph Hochreiner, 2010
+</div>
+</body>
+</html>

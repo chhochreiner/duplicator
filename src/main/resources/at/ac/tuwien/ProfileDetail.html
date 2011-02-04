@@ -1,0 +1,25 @@
+<html xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.5-strict.dtd" >
+<head><title>UserData</title></head>
+<body>
+<wicket:extend>
+<h1 wicket:id="name"></h1>
+<table>
+<tr><td><wicket:message key="email">[email]</wicket:message></td><td><span wicket:id="emailValue"></span></td></tr> 
+<tr><td><wicket:message key="password">[password]</wicket:message></td><td><span wicket:id="passwordValue"></span></td></tr> 
+<tr><td><wicket:message key="birthday">[birthday]</wicket:message></td><td><span wicket:id="birthdayValue"></span></td></tr> 
+</table>
+
+<table>
+  <tr wicket:id="additionalData">
+    <td><span wicket:id="key"></span></td>
+    <td><span wicket:id="value"></span></td>
+  </tr>
+</table>
+
+</wicket:extend>
+</body>
+</html>
+
+
+
+

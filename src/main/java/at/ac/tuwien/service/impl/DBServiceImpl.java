@@ -1,7 +1,9 @@
 package at.ac.tuwien.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -66,6 +68,22 @@ public class DBServiceImpl implements DBService {
         }
 
         return profiles;
+    }
+
+    @Override
+    public Map<String, Object> fetchProfileData(String uuid) {
+        Node profile = indexService.getSingleNode(INDEX, uuid);
+        if (profile == null) {
+            return null;
+        }
+
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        for (String key : profile.getPropertyKeys()) {
+            result.put(key, profile.getProperty(key));
+        }
+
+        return result;
     }
 
     public void setGraphDbService(GraphDatabaseService graphDbService) {
