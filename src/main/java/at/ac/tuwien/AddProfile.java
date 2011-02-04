@@ -1,5 +1,7 @@
 package at.ac.tuwien;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -65,12 +67,15 @@ public class AddProfile extends BasePage {
 
                 List<KeyValueEntry> values = additionalFields.getAdditionalValues();
 
-                if (birthday.getModel() != null) {
-                    values.add(new KeyValueEntry("birthday", birthday.getDate().toString()));
-                }
+                Format formatter = new SimpleDateFormat("dd.MM.yyyy");
+                values.add(new KeyValueEntry("birthday", formatter.format(birthday.getDate())));
 
-                dbService.addProfile(prenameModel.getObject(), surnameModel.getObject(), passwordModel.getObject(),
-                        emailModel.getObject(), values);
+                values.add(new KeyValueEntry("prename", prenameModel.getObject()));
+                values.add(new KeyValueEntry("surname", surnameModel.getObject()));
+                values.add(new KeyValueEntry("email", emailModel.getObject()));
+                values.add(new KeyValueEntry("password", passwordModel.getObject()));
+
+                dbService.addProfile(values);
             }
 
             @Override

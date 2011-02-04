@@ -15,6 +15,7 @@ eclipse-workspace
 #=================
 *target
 *bin
+*.appdata
 
 #================
 #Mac OS X hidden files/folders

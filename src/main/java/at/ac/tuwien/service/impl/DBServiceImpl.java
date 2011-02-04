@@ -1,5 +1,9 @@
 package at.ac.tuwien.service.impl;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +20,7 @@ import at.ac.tuwien.domain.KeyValueEntry;
 import at.ac.tuwien.domain.Profile;
 import at.ac.tuwien.domain.impl.ProfileImpl;
 import at.ac.tuwien.service.DBService;
+import au.com.bytecode.opencsv.CSVReader;
 
 public class DBServiceImpl implements DBService {
 
@@ -26,36 +31,6 @@ public class DBServiceImpl implements DBService {
     private IndexService indexService;
 
     private static final String INDEX = "UUID";
-
-    @Override
-    public void addProfile(String prename, String surname, String password, String email,
-            List<KeyValueEntry> additionalValues) {
-        Transaction tx = graphDbService.beginTx();
-        try {
-            Node node = graphDbService.createNode();
-
-            Profile profile = new ProfileImpl(node);
-            profile.setEmail(email);
-            profile.setPassword(password);
-            profile.setPrename(prename);
-            profile.setSurname(surname);
-
-            profile.setValue("UUID", UUID.randomUUID().toString());
-
-            List<KeyValueEntry> additional = additionalValues;
-
-            for (KeyValueEntry entry : additional) {
-                profile.setValue(entry.getKey(), entry.getValue());
-            }
-
-            indexService.index(node, INDEX, profile.getValue("UUID"));
-
-            tx.success();
-
-        } finally {
-            tx.finish();
-        }
-    }
 
     @Override
     public List<Profile> getProfiles() {
@@ -84,6 +59,77 @@ public class DBServiceImpl implements DBService {
         }
 
         return result;
+    }
+
+    @Override
+    public void addProfile(List<KeyValueEntry> data) {
+        Transaction tx = graphDbService.beginTx();
+        try {
+            Node node = graphDbService.createNode();
+
+            Profile profile = new ProfileImpl(node);
+
+            profile.setValue("UUID", UUID.randomUUID().toString());
+
+            for (KeyValueEntry entry : data) {
+                profile.setValue(entry.getKey(), entry.getValue());
+            }
+
+            indexService.index(node, INDEX, profile.getValue("UUID"));
+
+            tx.success();
+
+        } finally {
+            tx.finish();
+        }
+    }
+
+    @Override
+    public String addProfile(File newFile) {
+        String[] nextLine;
+        Map<Integer, String> header = null;
+        CSVReader reader;
+
+        try {
+            reader = new CSVReader(new FileReader(newFile));
+
+            nextLine = reader.readNext();
+            if (nextLine.length < 2) {
+                return "The profiles could no be added, because the file is empty";
+            } else {
+
+                header = new HashMap<Integer, String>();
+                for (int i = 0; i < nextLine.length; i++) {
+                    header.put(i, nextLine[i]);
+                }
+
+                if (!header.containsValue("prename") || !header.containsValue("surname")
+                        || !header.containsValue("email") || !header.containsValue("password")
+                        || !header.containsValue("birthday")) {
+                    return "There is at least one of the required fields missing.";
+                } else {
+
+                    List<KeyValueEntry> newData;
+                    Integer counter = 0;
+
+                    while ((nextLine = reader.readNext()) != null) {
+                        newData = new ArrayList<KeyValueEntry>();
+                        for (int i = 0; i < nextLine.length; i++) {
+                            newData.add(new KeyValueEntry(header.get(i), nextLine[i]));
+                        }
+                        addProfile(newData);
+                        counter++;
+                    }
+
+                    return (counter + " new entries were made");
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            return "The file was not found";
+        } catch (IOException e) {
+            return "The file could not be uploaded due to an internal error.";
+        }
     }
 
     public void setGraphDbService(GraphDatabaseService graphDbService) {

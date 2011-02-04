@@ -23,6 +23,7 @@ public class ProfileData extends BasePage {
         body.add(new AttributeModifier("id", true, new Model<String>("profiledata")));
 
         body.add(new BookmarkablePageLink<String>("addProfile", AddProfile.class));
+        body.add(new BookmarkablePageLink<String>("batchImport", BatchImport.class));
 
         body.add(new ListView<Profile>("profilelist", dbService.getProfiles()) {
 
