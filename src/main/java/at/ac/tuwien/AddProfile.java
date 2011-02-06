@@ -30,10 +30,10 @@ public class AddProfile extends BasePage {
     private Form<Void> profileDataForm;
     private AdditionalInputForm additionalFields;
 
-    private Model<String> prenameModel = new Model<String>("asd");
-    private Model<String> surnameModel = new Model<String>("asd");
-    private Model<String> emailModel = new Model<String>("asd@asd.at");
-    private Model<String> passwordModel = new Model<String>("asd");
+    private Model<String> prenameModel = new Model<String>();
+    private Model<String> surnameModel = new Model<String>();
+    private Model<String> emailModel = new Model<String>();
+    private Model<String> passwordModel = new Model<String>();
     private Model<Date> birthdayModel = new Model<Date>();
 
     public AddProfile() {

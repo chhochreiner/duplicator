@@ -14,17 +14,13 @@
 
 </div>
 
+<ul>
+    <li wicket:id="profilelist">
+        <span wicket:id="name"></span> (<span wicket:id="email"></span>) <a id="mainMenuProfileData" href="#" wicket:id="action"><wicket:message key="detailPage">[detailPage]</wicket:message></a>
+    </li>
+</ul>
 
-<table>
-	<tr><th><wicket:message key="name">[Name]</wicket:message></th><th><wicket:message key="email">[email]</wicket:message></th></tr>
-  <tr wicket:id="profilelist">
-    <td><span wicket:id="name"></span></td>
-    <td><span wicket:id="email"></span></td>
-    <td><a id="mainMenuProfileData" href="#" wicket:id="action">
-		<wicket:message key="detailPage">[detailPage]</wicket:message>
-	</a></td>
-  </tr>
-</table>
+
 
 
 </wicket:extend>

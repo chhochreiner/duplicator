@@ -15,7 +15,7 @@ eclipse-workspace
 #=================
 *target
 *bin
-*.appdata
+*appdata
 
 #================
 #Mac OS X hidden files/folders
@@ -27,3 +27,8 @@ eclipse-workspace
 #neo4j database server
 #===============
 neo4j-1.2
+
+#===============
+#logfiles
+#===============
+*.log

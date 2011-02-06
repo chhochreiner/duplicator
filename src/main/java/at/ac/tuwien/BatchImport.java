@@ -21,7 +21,7 @@ public class BatchImport extends BasePage {
     @SpringBean(name = "DBService")
     private DBService dbService;
 
-    private static final String UPLOAD_FOLDER = ".appdata/uploads/";
+    private static final String UPLOAD_FOLDER = "appdata/uploads/";
 
     public BatchImport() {
         body.add(new AttributeModifier("id", true, new Model<String>("profiledata")));

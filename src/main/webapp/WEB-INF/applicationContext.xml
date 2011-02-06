@@ -12,8 +12,9 @@
 	<!-- Beans -->
 	<bean id="graphDbService" class="org.neo4j.kernel.EmbeddedGraphDatabase"
 		init-method="enableRemoteShell" destroy-method="shutdown">
-		<constructor-arg index="0" value="target/neo4j-db" />
+		<constructor-arg index="0" value="appdata/neo4j-db" />
 	</bean>
+	
 	<bean id="indexService" class="org.neo4j.index.lucene.LuceneIndexService"
 		destroy-method="shutdown">
 		<constructor-arg index="0" ref="graphDbService" />
@@ -23,6 +24,8 @@
 		<property name="graphDbService" ref="graphDbService" />
 		<property name="indexService" ref="indexService" />
 	</bean>
+
+	<bean id="TemplateService" class="at.ac.tuwien.service.impl.TemplateServiceImpl" />
 
 
 </beans>
