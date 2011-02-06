@@ -19,7 +19,7 @@ public class AdditionalInputForm extends Form<Void> {
     private ListView<KeyValueEntry> elementView;
     private List<KeyValueEntry> entries;
 
-    public AdditionalInputForm(final String id, ArrayList<KeyValueEntry> data) {
+    public AdditionalInputForm(final String id, List<KeyValueEntry> data) {
         super(id);
 
         if (data != null) {

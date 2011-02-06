@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
@@ -70,6 +71,13 @@ public class ProfileDetail extends BasePage {
                 item.add(new Label("value", entry.getValue()));
             }
         });
+
+        PageParameters parameter = new PageParameters();
+
+        parameter.add("id", data.get("UUID").toString());
+
+        body.add(new BookmarkablePageLink<String>("edit", EditProfile.class, parameter));
+
     }
 
 }

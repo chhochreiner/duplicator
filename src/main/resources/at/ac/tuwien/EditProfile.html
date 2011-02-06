@@ -1,0 +1,90 @@
+<html xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.5-strict.dtd" >
+<head><title>UserData</title></head>
+<body>
+<wicket:extend>
+<h1><wicket:message key="addProfile">[Add new Profile]</wicket:message></h1>
+
+	<form id="profileDataForm" method="post" wicket:id="profileDataForm">
+		<div wicket:id="success" class="success">success message</div>
+		<div wicket:id="error" class="error">error message</div>
+	
+		<fieldset>
+			<legend><wicket:message key="compulsory">[compulsory]</wicket:message></legend>
+			
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="prename">[prename]</wicket:message>
+				</div>
+				<div class="formField">
+					<input type="text" id="prename" wicket:id="prename" class="inputText" />
+					<div wicket:id="prenameErrors" class="inputFieldError">[Errormessages]</div>
+				</div>
+			</div>
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="surname">[surname]</wicket:message>
+				</div>
+				<div class="formField">
+					<input type="text" id="surname" wicket:id="surname" class="inputText" />
+					<div wicket:id="surnameErrors" class="inputFieldError">[Errormessages]</div>
+				</div>
+			</div>
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="email">[email]</wicket:message>
+				</div>
+				<div class="formField">
+					<input type="text" id="email" wicket:id="email" class="inputText" />
+					<div wicket:id="emailErrors" class="inputFieldError">[Errormessages]</div>
+				</div>
+			</div>									
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="password">[password]</wicket:message>
+				</div>
+				<div class="formField">
+					<input type="text" id="password" wicket:id="password" class="inputText" />
+					<div wicket:id="passwordErrors" class="inputFieldError">[Errormessages]</div>
+				</div>
+			</div>
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="birthday">[birthday]</wicket:message>
+				</div>
+				<div class="formField">
+					<div wicket:id="birthday"></div>
+					<div wicket:id="birthdayErrors" class="inputFieldError">[Errormessages]</div>
+				</div>
+			</div>			
+		</fieldset>
+		
+		<fieldset>
+			<legend><wicket:message key="optional">[compulsory]</wicket:message></legend>
+			<div class="formElement">
+				<form wicket:id="additionalForm">
+					<table wicket:id="customFields">
+						<tr>
+							<td class="tableLabel"><wicket:message key="key">[Customer]</wicket:message></td>
+							<td><input type="text" wicket:id="ownField.id" /></td>
+							<td class="tableLabel"><wicket:message key="value">[Value]</wicket:message></td>
+							<td><input type="text" wicket:id="ownField.value" /></td>
+						</tr>
+					</table>
+					<input type="submit" value="Add Field" wicket:message="value:addField" wicket:id="addField" />
+					<input type="submit" value="Remove Field" wicket:message="value:removeField" wicket:id="removeField" />
+				</form>				
+				
+			</div>
+		
+		</fieldset>
+		
+		<div class="formSubmit">
+			<input type="submit" value="submit" wicket:message="value:global.button.submit" />
+		</div>
+	</form>
+
+
+
+</wicket:extend>
+</body>
+</html>

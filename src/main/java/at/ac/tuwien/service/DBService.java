@@ -16,4 +16,6 @@ public interface DBService {
     public List<Profile> getProfiles();
 
     public Map<String, Object> fetchProfileData(String uuid);
+
+    public void editProfile(String uuid, List<KeyValueEntry> data);
 }

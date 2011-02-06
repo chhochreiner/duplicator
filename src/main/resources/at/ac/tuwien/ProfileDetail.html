@@ -3,6 +3,12 @@
 <body>
 <wicket:extend>
 <h1 wicket:id="name"></h1>
+<div id="links">
+<a id="edit" href="#" wicket:id="edit">
+	<wicket:message key="edit">["edit"]</wicket:message>
+</a>
+</div>
+
 <table>
 <tr><td><wicket:message key="email">[email]</wicket:message></td><td><span wicket:id="emailValue"></span></td></tr> 
 <tr><td><wicket:message key="password">[password]</wicket:message></td><td><span wicket:id="passwordValue"></span></td></tr> 

@@ -47,7 +47,7 @@ public class DBServiceImpl implements DBService {
 
     @Override
     public Map<String, Object> fetchProfileData(String uuid) {
-        Node profile = indexService.getSingleNode(INDEX, uuid);
+        Node profile = fetchNode(uuid);
         if (profile == null) {
             return null;
         }
@@ -59,6 +59,33 @@ public class DBServiceImpl implements DBService {
         }
 
         return result;
+    }
+
+    private Node fetchNode(String uuid) {
+        Node profile = indexService.getSingleNode(INDEX, uuid);
+        if (profile == null) {
+            return null;
+        }
+        return profile;
+    }
+
+    @Override
+    public void editProfile(String uuid, List<KeyValueEntry> data) {
+        Transaction tx = graphDbService.beginTx();
+        try {
+            Node node = fetchNode(uuid);
+
+            Profile profile = new ProfileImpl(node);
+
+            for (KeyValueEntry entry : data) {
+                profile.setValue(entry.getKey(), entry.getValue());
+            }
+
+            tx.success();
+
+        } finally {
+            tx.finish();
+        }
     }
 
     @Override

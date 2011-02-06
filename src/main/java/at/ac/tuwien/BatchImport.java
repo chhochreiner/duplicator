@@ -67,7 +67,5 @@ public class BatchImport extends BasePage {
                 warn(getLocalizer().getString("uploadError", this));
             }
         }
-
     }
-
 }
