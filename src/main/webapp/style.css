@@ -217,3 +217,7 @@ fieldset .formGroup .formGroupLabel {
     color: white;
 }
 
+table td {
+  font: 76%/170% Verdana, sans-serif;
+}
+
