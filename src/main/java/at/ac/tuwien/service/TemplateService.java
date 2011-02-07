@@ -6,4 +6,6 @@ public interface TemplateService {
 
     public File generateTest(String filename, String uuid);
 
+    public String checkGeneratedTest(File file);
+
 }

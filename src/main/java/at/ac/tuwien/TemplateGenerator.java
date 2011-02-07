@@ -3,6 +3,7 @@ package at.ac.tuwien;
 import java.io.File;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
@@ -16,10 +17,13 @@ public class TemplateGenerator extends BasePage {
 
     @SpringBean(name = "TemplateService")
     private TemplateService templateService;
+    File test;
 
     public TemplateGenerator() {
 
         body.add(new AttributeModifier("id", true, new Model<String>("templategenerator")));
+
+        test = templateService.generateTest("muh", "uuid");
 
         body.add(new DownloadLink("template", new LoadableDetachableModel<File>() {
             private static final long serialVersionUID = -1486899377541253504L;
@@ -27,7 +31,7 @@ public class TemplateGenerator extends BasePage {
             @Override
             protected File load() {
                 try {
-                    return templateService.generateTest("muh", "uuid");
+                    return test;
                 } catch (final Exception e) {
                     e.printStackTrace();
                 }
@@ -35,5 +39,6 @@ public class TemplateGenerator extends BasePage {
             }
         }, "template.xml"));
 
+        body.add(new Label("log", templateService.checkGeneratedTest(test)));
     }
 }

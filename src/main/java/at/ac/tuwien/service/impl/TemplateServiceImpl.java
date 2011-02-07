@@ -45,29 +45,52 @@ public class TemplateServiceImpl implements TemplateService {
             e.printStackTrace();
         }
 
-        // checkforcomplete(file);
-
         return file;
 
     }
 
-    private String checkforcomplete(File file) throws FileNotFoundException, IOException {
-        FileReader reader = new FileReader(file);
+    @Override
+    public String checkGeneratedTest(File file) {
+        FileReader reader;
+        try {
+            reader = new FileReader(file);
 
-        BufferedReader bufRead = new BufferedReader(reader);
-        String line;
-        StringBuffer text = new StringBuffer();
+            BufferedReader bufRead = new BufferedReader(reader);
+            String line;
+            StringBuffer text = new StringBuffer();
 
-        line = bufRead.readLine();
-        while (line != null) {
-            text.append(line);
             line = bufRead.readLine();
+            while (line != null) {
+                text.append(line);
+                line = bufRead.readLine();
+            }
+
+            Pattern p = Pattern.compile("[$][a-zA-Z_0-9]+");
+            Matcher m = p.matcher(text.toString());
+            m.lookingAt();
+
+            String result = "";
+            Integer counter = 0;
+
+            while (m.find() || (counter > 10)) {
+                if (counter != 0) {
+                    result += ", ";
+                }
+                result += m.group();
+                counter++;
+            }
+
+            if (counter > 0) {
+                return ("The template could no be generated completly, there were " + counter + " attributes missing: " + result);
+            } else {
+                return "";
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        Pattern p = Pattern.compile("[$][a-zA-Z_0-9]+");
-        Matcher m = p.matcher(text.toString());
-        m.lookingAt();
-
-        return ("File could not be processed, there were " + m.groupCount() + " attributes missing: " + m.group());
+        return "The test could no be generated";
     }
 }
