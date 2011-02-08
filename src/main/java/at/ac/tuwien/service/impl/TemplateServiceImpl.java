@@ -33,6 +33,9 @@ public class TemplateServiceImpl implements TemplateService {
         if (!(new File("appdata/templates")).exists()) {
             new File("appdata/templates").mkdirs();
         }
+        if (!(new File("appdata/temp")).exists()) {
+            new File("appdata/temp").mkdirs();
+        }
     }
 
     @Override
@@ -98,7 +101,7 @@ public class TemplateServiceImpl implements TemplateService {
             if (counter > 0) {
                 return ("The template could no be generated completly, there were " + counter + " attributes missing: " + result);
             } else {
-                return "";
+                return ("The test was generated.");
             }
 
         } catch (FileNotFoundException e) {
@@ -106,7 +109,7 @@ public class TemplateServiceImpl implements TemplateService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "The test could no be generated";
+        return ("The test was generated.");
     }
 
     public void setDbService(DBService dbService) {
