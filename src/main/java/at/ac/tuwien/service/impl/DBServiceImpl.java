@@ -74,15 +74,14 @@ public class DBServiceImpl implements DBService {
         Transaction tx = graphDbService.beginTx();
         try {
             Node node = fetchNode(uuid);
-
             Profile profile = new ProfileImpl(node);
 
             for (KeyValueEntry entry : data) {
                 profile.setValue(entry.getKey(), entry.getValue());
+                splitBirthday(profile, entry);
             }
 
             tx.success();
-
         } finally {
             tx.finish();
         }
@@ -93,21 +92,28 @@ public class DBServiceImpl implements DBService {
         Transaction tx = graphDbService.beginTx();
         try {
             Node node = graphDbService.createNode();
-
             Profile profile = new ProfileImpl(node);
-
             profile.setValue("UUID", UUID.randomUUID().toString());
+            indexService.index(node, INDEX, profile.getValue("UUID"));
 
             for (KeyValueEntry entry : data) {
                 profile.setValue(entry.getKey(), entry.getValue());
+                splitBirthday(profile, entry);
             }
-
-            indexService.index(node, INDEX, profile.getValue("UUID"));
 
             tx.success();
 
         } finally {
             tx.finish();
+        }
+    }
+
+    private void splitBirthday(Profile profile, KeyValueEntry entry) {
+        if (entry.getKey().equals("birthday")) {
+            String[] birthday = entry.getValue().split("\\.");
+            profile.setValue("birthday_date", birthday[0]);
+            profile.setValue("birthday_month", birthday[1]);
+            profile.setValue("birthday_year", birthday[2]);
         }
     }
 

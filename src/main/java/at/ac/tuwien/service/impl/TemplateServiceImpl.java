@@ -42,7 +42,6 @@ public class TemplateServiceImpl implements TemplateService {
         ve.init();
 
         Template t = ve.getTemplate("appdata/templates/" + filename);
-
         VelocityContext context = new VelocityContext();
 
         Map<String, String> data = dbService.fetchProfileData(uuid);
@@ -52,10 +51,11 @@ public class TemplateServiceImpl implements TemplateService {
         }
 
         fileRemover("appdata/temp/" + filename);
+
         File file = new File("appdata/temp/" + filename);
+
         try {
             FileWriter writer = new FileWriter(file);
-
             t.merge(context, writer);
             writer.flush();
             writer.close();
@@ -64,20 +64,17 @@ public class TemplateServiceImpl implements TemplateService {
         }
 
         return file;
-
     }
 
     @Override
     public String checkGeneratedTest(File file) {
-        FileReader reader;
         try {
-            reader = new FileReader(file);
+            FileReader reader = new FileReader(file);
 
             BufferedReader bufRead = new BufferedReader(reader);
-            String line;
             StringBuffer text = new StringBuffer();
 
-            line = bufRead.readLine();
+            String line = bufRead.readLine();
             while (line != null) {
                 text.append(line);
                 line = bufRead.readLine();
@@ -122,13 +119,11 @@ public class TemplateServiceImpl implements TemplateService {
         files.add(generateTestsuite(files));
 
         byte[] buf = new byte[1024];
-
         fileRemover("appdata/temp/templates.zip");
-
         String outFilename = "appdata/temp/templates.zip";
-        ZipOutputStream out;
+
         try {
-            out = new ZipOutputStream(new FileOutputStream(outFilename));
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(outFilename));
 
             for (File file : files) {
                 FileInputStream in = new FileInputStream(file);
@@ -141,9 +136,7 @@ public class TemplateServiceImpl implements TemplateService {
                 in.close();
             }
             out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -179,9 +172,8 @@ public class TemplateServiceImpl implements TemplateService {
 
         result += "</tbody></table>" + "\n" + "</body>" + "\n" + "</html>";
 
-        FileWriter fstream;
         try {
-            fstream = new FileWriter("appdata/temp/suite.xml");
+            FileWriter fstream = new FileWriter("appdata/temp/suite.xml");
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(result);
             out.close();
@@ -189,13 +181,11 @@ public class TemplateServiceImpl implements TemplateService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return (new File("appdata/temp/suite.xml"));
     }
 
     private void fileRemover(String name) {
         File f = new File(name);
-
         if (f.exists()) {
             f.delete();
         }

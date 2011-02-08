@@ -47,23 +47,13 @@ public class TemplateGenerator extends BasePage {
     private DownloadLink download;
 
     public TemplateGenerator() {
-
         body.add(new AttributeModifier("id", true, new Model<String>("templategenerator")));
 
-        userdata = new ArrayList<HelperContainer>();
-        for (Profile user : dbService.getProfiles()) {
-            userdata.add(new HelperContainer(user.toString(), user.getValue("UUID")));
-        }
+        generateUserData();
+        generateTemplateData();
 
         selectedUser = new Model<HelperContainer>();
         user = new ListChoice<HelperContainer>("user", selectedUser, userdata);
-
-        File dir = new File("appdata/templates/");
-        templatedata = new ArrayList<HelperContainer>();
-
-        for (String file : dir.list()) {
-            templatedata.add(new HelperContainer(file, file));
-        }
 
         renderer = new ChoiceRenderer<HelperContainer>("name", "name");
         templates = new Palette<HelperContainer>("templates", new ListModel<HelperContainer>(
@@ -77,9 +67,8 @@ public class TemplateGenerator extends BasePage {
             @Override
             public void setupForm() {
                 user.setMaxRows(7);
-                add(user);
+                add(user, templates);
                 add(new ComponentFeedbackPanel("userErrors", user));
-                add(templates);
                 add(new ComponentFeedbackPanel("templateErrors", templates));
             }
 
@@ -87,27 +76,17 @@ public class TemplateGenerator extends BasePage {
             public void saveAction() {
                 final List<File> generatedFiles = new ArrayList<File>();
                 String logText = "";
-
                 Iterator<HelperContainer> selected = templates.getSelectedChoices();
 
                 while (selected.hasNext()) {
-                    HelperContainer buffer = selected.next();
                     generated = true;
-                    File test = templateService.generateTest(buffer.name, selectedUser.getObject().UUID);
+                    File test = templateService.generateTest(selected.next().name, selectedUser.getObject().UUID);
                     generatedFiles.add(test);
-                    logText += templateService.checkGeneratedTest(test) + "<br />";
+                    logText += test.getName() + " -- " + templateService.checkGeneratedTest(test) + "<br />";
                 }
 
                 if (!generated) {
                     templates.error("You have to select at least one template.");
-                }
-
-                final File returnfile;
-
-                if (generatedFiles.size() > 1) {
-                    returnfile = templateService.createTestSuiteZip(generatedFiles);
-                } else {
-                    returnfile = generatedFiles.get(0);
                 }
 
                 download = new DownloadLink("template", new LoadableDetachableModel<File>() {
@@ -116,7 +95,7 @@ public class TemplateGenerator extends BasePage {
                     @Override
                     protected File load() {
                         try {
-                            return returnfile;
+                            return generateReturnFile(generatedFiles);
                         } catch (final Exception e) {
                             e.printStackTrace();
                         }
@@ -130,6 +109,16 @@ public class TemplateGenerator extends BasePage {
                 log = new Label("log", logText);
                 log.setEscapeModelStrings(false);
                 body.addOrReplace(log);
+            }
+
+            private File generateReturnFile(final List<File> generatedFiles) {
+                final File returnfile;
+                if (generatedFiles.size() > 1) {
+                    returnfile = templateService.createTestSuiteZip(generatedFiles);
+                } else {
+                    returnfile = generatedFiles.get(0);
+                }
+                return returnfile;
             }
 
             @Override
@@ -163,7 +152,6 @@ public class TemplateGenerator extends BasePage {
             @Override
             public void resetModel() {
             }
-
         };
 
         body.add(templateDataForm);
@@ -172,6 +160,23 @@ public class TemplateGenerator extends BasePage {
         download.setVisibilityAllowed(false);
         body.add(download);
         body.add(log);
+    }
+
+    private void generateTemplateData() {
+        File dir = new File("appdata/templates/");
+        templatedata = new ArrayList<HelperContainer>();
+
+        for (String file : dir.list()) {
+            templatedata.add(new HelperContainer(file, file));
+        }
+    }
+
+    private void generateUserData() {
+        userdata = new ArrayList<HelperContainer>();
+
+        for (Profile user : dbService.getProfiles()) {
+            userdata.add(new HelperContainer(user.toString(), user.getValue("UUID")));
+        }
     }
 
     private class HelperContainer implements Serializable {
@@ -189,10 +194,5 @@ public class TemplateGenerator extends BasePage {
         public String toString() {
             return name;
         }
-
-        public String getUUID() {
-            return UUID;
-        }
     }
-
 }

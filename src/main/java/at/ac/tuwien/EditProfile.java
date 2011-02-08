@@ -74,9 +74,9 @@ public class EditProfile extends BasePage {
 
         try {
             DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-            birthdayModel = new Model<Date>(formatter.parse(data.get("birthday").toString()));
+            birthdayModel = new Model<Date>(formatter.parse(data.get("birthday")));
         } catch (ParseException e) {
-            // supress
+            e.printStackTrace();
         }
 
         for (String key : data.keySet()) {
