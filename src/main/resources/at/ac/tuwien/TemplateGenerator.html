@@ -2,9 +2,49 @@
 <head><title>TemplateGenerator</title></head>
 <body>
 <wicket:extend>
-<h1>Page1</h1>
-	<span wicket:id="log"></span>
+<h1>TemplateGenerator</h1>
+
+	<form id="templateDataForm" method="post" wicket:id="templateDataForm">
+		<div wicket:id="success" class="success">success message</div>
+		<div wicket:id="error" class="error">error message</div>
+	
+		<fieldset>			
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="userList">[userList]</wicket:message>
+				</div>
+				<div class="formField">
+					<select wicket:id="user">
+						<option>user 1</option>
+						<option>user 2</option>
+					</select>				
+					<div wicket:id="userErrors" class="inputFieldError">[Errormessages]</div>
+				</div>
+			</div>
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="templateList">[surname]</wicket:message>
+				</div>
+				<div class="formField">
+				<span wicket:id="templates"></span>
+					<div wicket:id="templateErrors" class="inputFieldError">[Errormessages]</div>
+				</div>
+			</div>
+		</fieldset>
+		
+		<div class="formSubmit">
+			<input type="submit" value="submit" wicket:message="value:global.button.submit" />
+		</div>
+		
+		
+		
+	</form>
+
+
+	<div id="log"><span wicket:id="log"></span></div>
 	<div><a href="#" wicket:id="template"><wicket:message key="downloadLink">[downloadLink]</wicket:message></a> </div>
+
+
 </wicket:extend>
 </body>
 </html>
