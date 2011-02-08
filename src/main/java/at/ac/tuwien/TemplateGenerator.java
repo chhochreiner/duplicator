@@ -13,6 +13,7 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.ListChoice;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.markup.html.panel.ComponentFeedbackPanel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -48,6 +49,7 @@ public class TemplateGenerator extends BasePage {
 
     public TemplateGenerator() {
         body.add(new AttributeModifier("id", true, new Model<String>("templategenerator")));
+        body.add(new BookmarkablePageLink<String>("importTemplate", ImportTemplates.class));
 
         generateUserData();
         generateTemplateData();
