@@ -141,17 +141,6 @@ public class EditProfile extends BasePage {
 
             @Override
             public void resetModel() {
-                prenameModel = new Model<String>();
-                surnameModel = new Model<String>();
-                passwordModel = new Model<String>();
-                emailModel = new Model<String>();
-                birthdayModel = new Model<Date>();
-
-                prenameField.setModel(prenameModel);
-                surnameField.setModel(surnameModel);
-                passwordField.setModel(passwordModel);
-                emailField.setModel(emailModel);
-                birthday.setModel(birthdayModel);
             }
 
         };
