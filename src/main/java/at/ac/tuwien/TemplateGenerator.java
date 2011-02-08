@@ -3,6 +3,7 @@ package at.ac.tuwien;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -35,8 +36,8 @@ public class TemplateGenerator extends BasePage {
     @SpringBean(name = "DBService")
     private DBService dbService;
 
-    private File test;
     private List<HelperContainer> userdata;
+    private List<HelperContainer> templatedata;
     private Palette<HelperContainer> templates;
     private Form<Void> templateDataForm;
     private ListChoice<HelperContainer> user;
@@ -57,12 +58,21 @@ public class TemplateGenerator extends BasePage {
         selectedUser = new Model<HelperContainer>();
         user = new ListChoice<HelperContainer>("user", selectedUser, userdata);
 
+        File dir = new File("appdata/templates/");
+        templatedata = new ArrayList<HelperContainer>();
+
+        for (String file : dir.list()) {
+            templatedata.add(new HelperContainer(file, file));
+        }
+
         renderer = new ChoiceRenderer<HelperContainer>("name", "name");
         templates = new Palette<HelperContainer>("templates", new ListModel<HelperContainer>(
-                new ArrayList<HelperContainer>()), new CollectionModel<HelperContainer>(userdata), renderer, 10, true);
+                new ArrayList<HelperContainer>()), new CollectionModel<HelperContainer>(templatedata), renderer, 10,
+                true);
 
         templateDataForm = new FormTemplate("templateDataForm") {
             private static final long serialVersionUID = -3481033707162528991L;
+            private boolean generated = false;
 
             @Override
             public void setupForm() {
@@ -75,13 +85,30 @@ public class TemplateGenerator extends BasePage {
 
             @Override
             public void saveAction() {
+                final List<File> generatedFiles = new ArrayList<File>();
+                String logText = "";
+
+                Iterator<HelperContainer> selected = templates.getSelectedChoices();
+
+                while (selected.hasNext()) {
+                    HelperContainer buffer = selected.next();
+                    generated = true;
+                    File test = templateService.generateTest(buffer.name, selectedUser.getObject().UUID);
+                    generatedFiles.add(test);
+                    logText += templateService.checkGeneratedTest(test) + "<br />";
+                }
+
+                if (!generated) {
+                    templates.error("You have to select at least one template.");
+                }
+
                 download = new DownloadLink("template", new LoadableDetachableModel<File>() {
                     private static final long serialVersionUID = -1486899377541253504L;
 
                     @Override
                     protected File load() {
                         try {
-                            return test;
+                            return generatedFiles.get(0);
                         } catch (final Exception e) {
                             e.printStackTrace();
                         }
@@ -92,11 +119,27 @@ public class TemplateGenerator extends BasePage {
                 download.setVisibilityAllowed(true);
                 body.addOrReplace(download);
 
-                test = templateService.generateTest("muh", "uuid");
-
-                log = new Label("log", templateService.checkGeneratedTest(test));
+                log = new Label("log", logText);
+                log.setEscapeModelStrings(false);
                 body.addOrReplace(log);
+            }
 
+            @Override
+            protected void onSubmit() {
+                saveAction();
+                successMessage();
+
+                success.setVisible(true);
+                error.setVisible(false);
+                resetModel();
+                if (!generated) {
+                    triggerError();
+                }
+            }
+
+            private void triggerError() {
+                success.setVisible(false);
+                error.setVisible(true);
             }
 
             @Override

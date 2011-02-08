@@ -6,16 +6,22 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import at.ac.tuwien.service.DBService;
 import at.ac.tuwien.service.TemplateService;
 
 public class TemplateServiceImpl implements TemplateService {
+
+    @SpringBean(name = "DBService")
+    public DBService dbService;
 
     public TemplateServiceImpl() {
         if (!(new File("appdata/templates")).exists()) {
@@ -29,10 +35,15 @@ public class TemplateServiceImpl implements TemplateService {
         VelocityEngine ve = new VelocityEngine();
         ve.init();
 
-        Template t = ve.getTemplate("appdata/templates/studivz.xml");
+        Template t = ve.getTemplate("appdata/templates/" + filename);
 
         VelocityContext context = new VelocityContext();
-        context.put("prename", "John");
+
+        Map<String, String> data = dbService.fetchProfileData(uuid);
+
+        for (String key : data.keySet()) {
+            context.put(key, data.get(key));
+        }
 
         File file = new File("appdata/temp/" + filename + uuid);
         try {
@@ -93,4 +104,9 @@ public class TemplateServiceImpl implements TemplateService {
         }
         return "The test could no be generated";
     }
+
+    public void setDbService(DBService dbService) {
+        this.dbService = dbService;
+    }
+
 }

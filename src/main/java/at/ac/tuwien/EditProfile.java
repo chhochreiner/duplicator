@@ -42,7 +42,7 @@ public class EditProfile extends BasePage {
     private Model<String> emailModel;
     private Model<String> passwordModel;
     private Model<Date> birthdayModel;
-    private Map<String, Object> data;
+    private Map<String, String> data;
 
     public EditProfile(PageParameters parameters) {
         body.add(new AttributeModifier("id", true, new Model<String>("profiledata")));
@@ -67,10 +67,10 @@ public class EditProfile extends BasePage {
             throw new RestartResponseException(ErrorPage.class, parameter);
         }
 
-        prenameModel = new Model<String>(data.get("prename").toString());
-        surnameModel = new Model<String>(data.get("surname").toString());
-        emailModel = new Model<String>(data.get("email").toString());
-        passwordModel = new Model<String>(data.get("password").toString());
+        prenameModel = new Model<String>(data.get("prename"));
+        surnameModel = new Model<String>(data.get("surname"));
+        emailModel = new Model<String>(data.get("email"));
+        passwordModel = new Model<String>(data.get("password"));
 
         try {
             DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");

@@ -30,7 +30,7 @@ public class ProfileDetail extends BasePage {
 
         StringValue uuid = parameters.get("id");
 
-        Map<String, Object> data = dbService.fetchProfileData(uuid.toString());
+        Map<String, String> data = dbService.fetchProfileData(uuid.toString());
 
         List<KeyValueEntry> additionalvalues = new ArrayList<KeyValueEntry>();
 
@@ -49,10 +49,10 @@ public class ProfileDetail extends BasePage {
             throw new RestartResponseException(ErrorPage.class, parameter);
         }
 
-        body.add(new Label("name", data.get("prename").toString() + " " + data.get("surname").toString()));
-        body.add(new Label("emailValue", data.get("email").toString()));
-        body.add(new Label("passwordValue", data.get("password").toString()));
-        body.add(new Label("birthdayValue", data.get("birthday").toString()));
+        body.add(new Label("name", data.get("prename") + " " + data.get("surname")));
+        body.add(new Label("emailValue", data.get("email")));
+        body.add(new Label("passwordValue", data.get("password")));
+        body.add(new Label("birthdayValue", data.get("birthday")));
 
         for (String key : data.keySet()) {
             if (alreadyListet.contains(key)) {

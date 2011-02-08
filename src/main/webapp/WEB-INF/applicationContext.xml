@@ -25,7 +25,9 @@
 		<property name="indexService" ref="indexService" />
 	</bean>
 
-	<bean id="TemplateService" class="at.ac.tuwien.service.impl.TemplateServiceImpl" />
+	<bean id="TemplateService" class="at.ac.tuwien.service.impl.TemplateServiceImpl">
+		<property name="dbService" ref="DBService" />
+	</bean>
 
 
 </beans>
