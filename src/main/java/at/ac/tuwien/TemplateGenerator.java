@@ -102,19 +102,27 @@ public class TemplateGenerator extends BasePage {
                     templates.error("You have to select at least one template.");
                 }
 
+                final File returnfile;
+
+                if (generatedFiles.size() > 1) {
+                    returnfile = templateService.createTestSuiteZip(generatedFiles);
+                } else {
+                    returnfile = generatedFiles.get(0);
+                }
+
                 download = new DownloadLink("template", new LoadableDetachableModel<File>() {
                     private static final long serialVersionUID = -1486899377541253504L;
 
                     @Override
                     protected File load() {
                         try {
-                            return generatedFiles.get(0);
+                            return returnfile;
                         } catch (final Exception e) {
                             e.printStackTrace();
                         }
                         return null;
                     }
-                }, "template.xml");
+                });
 
                 download.setVisibilityAllowed(true);
                 body.addOrReplace(download);
