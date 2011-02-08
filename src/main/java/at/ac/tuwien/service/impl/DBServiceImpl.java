@@ -120,10 +120,12 @@ public class DBServiceImpl implements DBService {
             profile.setValue("birthday_year", birthday[2]);
             DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
             DateFormat formatterSingleDate = new SimpleDateFormat("d");
+            DateFormat formatterSingleMonth = new SimpleDateFormat("M");
             DateFormat formatterMonth = new SimpleDateFormat("MMM");
             try {
                 Date birthdayDate = formatter.parse(entry.getValue());
                 profile.setValue("birthday_date_without_null", formatterSingleDate.format(birthdayDate));
+                profile.setValue("birthday_month_without_null", formatterSingleMonth.format(birthdayDate));
                 profile.setValue("birthday_month_alpha", formatterMonth.format(birthdayDate));
             } catch (ParseException e) {
                 e.printStackTrace();
