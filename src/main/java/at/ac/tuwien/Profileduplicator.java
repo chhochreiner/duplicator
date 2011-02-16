@@ -9,8 +9,8 @@ public class Profileduplicator extends WebApplication {
     }
 
     @Override
-    public Class<BasePage> getHomePage() {
-        return BasePage.class;
+    public Class<Homepage> getHomePage() {
+        return Homepage.class;
     }
 
     @Override

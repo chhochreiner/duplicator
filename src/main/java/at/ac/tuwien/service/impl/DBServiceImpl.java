@@ -79,10 +79,31 @@ public class DBServiceImpl implements DBService {
         try {
             Node node = fetchNode(uuid);
             Profile profile = new ProfileImpl(node);
+            List<String> existing = new ArrayList<String>();
+
+            for (String key : node.getPropertyKeys()) {
+                existing.add(key);
+            }
 
             for (KeyValueEntry entry : data) {
                 profile.setValue(entry.getKey(), entry.getValue());
                 splitBirthday(profile, entry);
+                existing.remove(entry.getKey());
+            }
+
+            List<String> alreadyListet = new ArrayList<String>();
+            alreadyListet.add("UUID");
+            alreadyListet.add("birthday_year");
+            alreadyListet.add("birthday_month_alpha");
+            alreadyListet.add("birthday_month_without_null");
+            alreadyListet.add("birthday_date_without_null");
+            alreadyListet.add("birthday_date");
+            alreadyListet.add("birthday_month");
+
+            for (String key : existing) {
+                if (!alreadyListet.contains(key)) {
+                    node.removeProperty(key);
+                }
             }
 
             tx.success();

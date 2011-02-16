@@ -30,7 +30,7 @@ public class AdditionalInputForm extends Form<Void> {
 
         setOutputMarkupId(true);
 
-        this.elementView = new ListView<KeyValueEntry>("customFields", this.entries) {
+        this.elementView = new ListView<KeyValueEntry>("customFields", entries) {
 
             private static final long serialVersionUID = -6012822316820493831L;
 
@@ -38,6 +38,21 @@ public class AdditionalInputForm extends Form<Void> {
             protected void populateItem(final ListItem<KeyValueEntry> item) {
                 item.add(new TextField<String>("ownField.id", item.getModelObject().getKeyModel()));
                 item.add(new TextField<String>("ownField.value", item.getModelObject().getValueModel()));
+
+                item.add(new AjaxButton("removeField") {
+                    private static final long serialVersionUID = 8086971193734197987L;
+
+                    @Override
+                    protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
+                        entries.remove(item.getModelObject());
+                        target.add(form);
+                    }
+
+                    @Override
+                    protected void onError(AjaxRequestTarget target, Form<?> form) {
+                    }
+                });
+
             }
         };
         this.elementView.setOutputMarkupId(true);
@@ -49,35 +64,27 @@ public class AdditionalInputForm extends Form<Void> {
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
-                AdditionalInputForm.this.entries.add(new KeyValueEntry());
-                target.addComponent(form);
+                entries.add(new KeyValueEntry());
+                target.add(form);
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
-                // TODO Auto-generated method stub
-
             }
-
         });
 
         add(new AjaxButton("removeField", this) {
-
             private static final long serialVersionUID = -6012822316820493833L;
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
-                // checks if any textfields exist
-                if (AdditionalInputForm.this.entries.size() > 0) {
-                    AdditionalInputForm.this.entries.remove(AdditionalInputForm.this.entries.size() - 1);
+                if (entries.size() > 0) {
+                    entries.remove(entries.size() - 1);
                 }
-                target.addComponent(form);
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
-                // TODO Auto-generated method stub
-
             }
 
         });

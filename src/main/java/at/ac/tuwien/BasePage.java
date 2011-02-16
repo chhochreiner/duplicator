@@ -14,7 +14,7 @@ public class BasePage extends WebPage {
         body = new WebMarkupContainer("body");
         body.add(new AttributeModifier("id", true, new Model<String>("home")));
 
-        body.add(new BookmarkablePageLink("home", BasePage.class));
+        body.add(new BookmarkablePageLink("home", Homepage.class));
         body.add(new BookmarkablePageLink("profiledata", ProfileData.class));
         body.add(new BookmarkablePageLink("templategenerator", TemplateGenerator.class));
 

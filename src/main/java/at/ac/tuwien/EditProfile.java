@@ -59,6 +59,12 @@ public class EditProfile extends BasePage {
         alreadyListet.add("password");
         alreadyListet.add("birthday");
         alreadyListet.add("UUID");
+        alreadyListet.add("birthday_year");
+        alreadyListet.add("birthday_month_alpha");
+        alreadyListet.add("birthday_month_without_null");
+        alreadyListet.add("birthday_date_without_null");
+        alreadyListet.add("birthday_date");
+        alreadyListet.add("birthday_month");
 
         if (data == null) {
             PageParameters parameter = new PageParameters();
