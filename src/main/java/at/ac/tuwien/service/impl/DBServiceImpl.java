@@ -184,7 +184,6 @@ public class DBServiceImpl implements DBService {
                         addProfile(newData);
                         counter++;
                     }
-
                     return (counter + " new entries were made");
                 }
             }

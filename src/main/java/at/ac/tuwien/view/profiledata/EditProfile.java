@@ -1,4 +1,4 @@
-package at.ac.tuwien;
+package at.ac.tuwien.view.profiledata;
 
 import java.text.DateFormat;
 import java.text.Format;
@@ -22,6 +22,9 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 
+import at.ac.tuwien.BasePage;
+import at.ac.tuwien.ErrorPage;
+import at.ac.tuwien.GeneralConstants;
 import at.ac.tuwien.components.AdditionalInputForm;
 import at.ac.tuwien.components.FormTemplate;
 import at.ac.tuwien.domain.KeyValueEntry;

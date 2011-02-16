@@ -8,6 +8,9 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
+import at.ac.tuwien.view.profiledata.ProfileData;
+import at.ac.tuwien.view.templateduplication.TemplateGenerator;
+
 public class ErrorPage extends WebPage {
 
     WebMarkupContainer body;

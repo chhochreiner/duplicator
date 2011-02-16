@@ -1,4 +1,4 @@
-package at.ac.tuwien;
+package at.ac.tuwien.view.profiledata;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
@@ -9,6 +9,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import at.ac.tuwien.BasePage;
 import at.ac.tuwien.domain.Profile;
 import at.ac.tuwien.service.DBService;
 

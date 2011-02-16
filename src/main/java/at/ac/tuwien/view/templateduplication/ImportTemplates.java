@@ -1,4 +1,4 @@
-package at.ac.tuwien;
+package at.ac.tuwien.view.templateduplication;
 
 import java.io.File;
 
@@ -7,33 +7,29 @@ import org.apache.wicket.extensions.ajax.markup.html.form.upload.UploadProgressB
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import at.ac.tuwien.BasePage;
 import at.ac.tuwien.components.FileUploadForm;
-import at.ac.tuwien.service.DBService;
 
-public class BatchImport extends BasePage {
+public class ImportTemplates extends BasePage {
 
-    private static final long serialVersionUID = 7734710518718389158L;
+    private static final long serialVersionUID = 7734810518718389158L;
 
-    @SpringBean(name = "DBService")
-    private DBService dbService;
+    private static final String UPLOAD_FOLDER = "appdata/templates/";
 
-    private static final String UPLOAD_FOLDER = "appdata/uploads/";
-
-    public BatchImport() {
-        body.add(new AttributeModifier("id", true, new Model<String>("profiledata")));
+    public ImportTemplates() {
+        body.add(new AttributeModifier("id", true, new Model<String>("templategenerator")));
 
         if (!new File(UPLOAD_FOLDER).exists()) {
             new File(UPLOAD_FOLDER).mkdirs();
         }
 
         final Form<Void> uploadForm = new FileUploadForm("uploadForm", UPLOAD_FOLDER) {
-            private static final long serialVersionUID = -4499523543968816298L;
+            private static final long serialVersionUID = -4499523543968716298L;
 
             @Override
             public String additionalAction() {
-                return dbService.addProfile(newFile);
+                return "The template " + getFileName() + " was uploaded.";
             }
         };
 
@@ -42,5 +38,4 @@ public class BatchImport extends BasePage {
         body.add(new FeedbackPanel("feedback"));
 
     }
-
 }

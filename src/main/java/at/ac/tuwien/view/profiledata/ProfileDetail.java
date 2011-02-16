@@ -1,4 +1,4 @@
-package at.ac.tuwien;
+package at.ac.tuwien.view.profiledata;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,9 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
 
+import at.ac.tuwien.BasePage;
+import at.ac.tuwien.ErrorPage;
+import at.ac.tuwien.GeneralConstants;
 import at.ac.tuwien.domain.KeyValueEntry;
 import at.ac.tuwien.service.DBService;
 
@@ -71,6 +74,7 @@ public class ProfileDetail extends BasePage {
         parameter.add("id", data.get("UUID").toString());
 
         body.add(new BookmarkablePageLink<String>("edit", EditProfile.class, parameter));
+        body.add(new BookmarkablePageLink<String>("editFriends", EditFriends.class, parameter));
 
     }
 

@@ -1,4 +1,4 @@
-package at.ac.tuwien;
+package at.ac.tuwien.view.templateduplication;
 
 import java.io.File;
 import java.io.Serializable;
@@ -22,6 +22,7 @@ import org.apache.wicket.model.util.CollectionModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import at.ac.tuwien.BasePage;
 import at.ac.tuwien.components.FormTemplate;
 import at.ac.tuwien.domain.Profile;
 import at.ac.tuwien.service.DBService;

@@ -6,9 +6,12 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.Model;
 
+import at.ac.tuwien.view.profiledata.ProfileData;
+import at.ac.tuwien.view.templateduplication.TemplateGenerator;
+
 public class BasePage extends WebPage {
 
-    WebMarkupContainer body;
+    protected WebMarkupContainer body;
 
     public BasePage() {
         body = new WebMarkupContainer("body");
