@@ -13,6 +13,7 @@ import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
@@ -25,6 +26,7 @@ import at.ac.tuwien.components.FormTemplate;
 import at.ac.tuwien.domain.KeyValueEntry;
 import at.ac.tuwien.domain.Profile;
 import at.ac.tuwien.service.DBService;
+import at.ac.tuwien.service.TemplateService;
 
 public class EditFriends extends BasePage {
 
@@ -32,6 +34,9 @@ public class EditFriends extends BasePage {
 
     @SpringBean(name = "DBService")
     private DBService dbService;
+
+    @SpringBean(name = "TemplateService")
+    private TemplateService templateService;
 
     private Form<Void> friendsDataForm;
 
@@ -139,5 +144,6 @@ public class EditFriends extends BasePage {
         };
 
         body.add(friendsDataForm);
+        body.add(new DownloadLink("vcard", templateService.generateVcardExport(dbService.getRelatedProfiles(uuid))));
     }
 }

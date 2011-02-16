@@ -21,6 +21,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import at.ac.tuwien.domain.Profile;
 import at.ac.tuwien.service.DBService;
 import at.ac.tuwien.service.TemplateService;
 
@@ -192,5 +193,27 @@ public class TemplateServiceImpl implements TemplateService {
         if (f.exists()) {
             f.delete();
         }
+    }
+
+    @Override
+    public File generateVcardExport(List<Profile> profiles) {
+        String result = "";
+
+        for (Profile profile : profiles) {
+            result += "BEGIN:VCARD\n" + "FN:" + profile.getPrename() + "\n" + "N:" + profile.getSurname() + "\n"
+                    + "EMAIL;Internet:" + profile.getEmail() + "\n" + "VERSION:2.1\n" + "END:VCARD\n" + "\n";
+        }
+
+        try {
+            FileWriter fstream = new FileWriter("appdata/temp/contacts.vcf");
+            BufferedWriter out = new BufferedWriter(fstream);
+            out.write(result);
+            out.close();
+            fstream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return (new File("appdata/temp/contacts.vcf"));
+
     }
 }

@@ -3,6 +3,8 @@ package at.ac.tuwien.service;
 import java.io.File;
 import java.util.List;
 
+import at.ac.tuwien.domain.Profile;
+
 public interface TemplateService {
 
     public File generateTest(String filename, String uuid);
@@ -10,5 +12,7 @@ public interface TemplateService {
     public String checkGeneratedTest(File file);
 
     public File createTestSuiteZip(List<File> files);
+
+    public File generateVcardExport(List<Profile> profiles);
 
 }
