@@ -52,19 +52,8 @@ public class EditProfile extends BasePage {
         data = dbService.fetchProfileData(uuid.toString());
         final List<KeyValueEntry> additionalvalues = new ArrayList<KeyValueEntry>();
 
-        List<String> alreadyListet = new ArrayList<String>();
-        alreadyListet.add("prename");
-        alreadyListet.add("surname");
-        alreadyListet.add("email");
-        alreadyListet.add("password");
-        alreadyListet.add("birthday");
-        alreadyListet.add("UUID");
-        alreadyListet.add("birthday_year");
-        alreadyListet.add("birthday_month_alpha");
-        alreadyListet.add("birthday_month_without_null");
-        alreadyListet.add("birthday_date_without_null");
-        alreadyListet.add("birthday_date");
-        alreadyListet.add("birthday_month");
+        List<String> alreadyListet = GeneralConstants.getBlacklistedKeys();
+        alreadyListet.addAll(GeneralConstants.getRequiredKeys());
 
         if (data == null) {
             PageParameters parameter = new PageParameters();

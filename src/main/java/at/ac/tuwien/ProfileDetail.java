@@ -34,13 +34,7 @@ public class ProfileDetail extends BasePage {
 
         List<KeyValueEntry> additionalvalues = new ArrayList<KeyValueEntry>();
 
-        List<String> alreadyListet = new ArrayList<String>();
-        alreadyListet.add("prename");
-        alreadyListet.add("surname");
-        alreadyListet.add("email");
-        alreadyListet.add("password");
-        alreadyListet.add("birthday");
-        alreadyListet.add("UUID");
+        List<String> alreadyListet = GeneralConstants.getRequiredKeys();
 
         if (data == null) {
             PageParameters parameter = new PageParameters();

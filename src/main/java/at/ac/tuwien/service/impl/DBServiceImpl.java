@@ -20,6 +20,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.index.IndexService;
 
+import at.ac.tuwien.GeneralConstants;
 import at.ac.tuwien.domain.KeyValueEntry;
 import at.ac.tuwien.domain.Profile;
 import at.ac.tuwien.domain.impl.ProfileImpl;
@@ -91,14 +92,7 @@ public class DBServiceImpl implements DBService {
                 existing.remove(entry.getKey());
             }
 
-            List<String> alreadyListet = new ArrayList<String>();
-            alreadyListet.add("UUID");
-            alreadyListet.add("birthday_year");
-            alreadyListet.add("birthday_month_alpha");
-            alreadyListet.add("birthday_month_without_null");
-            alreadyListet.add("birthday_date_without_null");
-            alreadyListet.add("birthday_date");
-            alreadyListet.add("birthday_month");
+            List<String> alreadyListet = GeneralConstants.getBlacklistedKeys();
 
             for (String key : existing) {
                 if (!alreadyListet.contains(key)) {
