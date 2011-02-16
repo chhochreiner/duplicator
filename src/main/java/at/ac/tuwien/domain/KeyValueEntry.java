@@ -50,7 +50,7 @@ public class KeyValueEntry implements Serializable {
 
     @Override
     public String toString() {
-        return "Key [" + getKey() + "] Value [" + getValue() + "]";
+        return getValue();
     }
 
 }

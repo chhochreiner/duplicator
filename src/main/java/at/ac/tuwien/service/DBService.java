@@ -18,4 +18,10 @@ public interface DBService {
     public Map<String, String> fetchProfileData(String uuid);
 
     public void editProfile(String uuid, List<KeyValueEntry> data);
+
+    public boolean addRelation(String uuid1, String uuid2);
+
+    public boolean removeRelation(String uuid1, String uuid2);
+
+    public List<Profile> getRelatedProfiles(String uuid);
 }

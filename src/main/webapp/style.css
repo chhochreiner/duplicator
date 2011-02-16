@@ -221,3 +221,18 @@ table td {
   font: 76%/170% Verdana, sans-serif;
 }
 
+
+div.wicket-aa {
+	background-color: white;
+	border-width: 1px;
+	border-color: #cccccc;
+	border-style: solid;
+	padding: 2px;
+	margin: 1px 0 0 0;
+	text-align:left;
+}
+
+div.wicket-aa ul { list-style:none; padding: 2px; margin:0; }
+div.wicket-aa ul li.selected { background-color: #dddddd; padding: 2px; margin:0; }
+
+

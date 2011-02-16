@@ -15,8 +15,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.index.IndexService;
 
@@ -28,6 +31,10 @@ import at.ac.tuwien.service.DBService;
 import au.com.bytecode.opencsv.CSVReader;
 
 public class DBServiceImpl implements DBService {
+
+    enum MyRelationshipTypes implements RelationshipType {
+        KNOWS
+    }
 
     @SpringBean(name = "graphDbService")
     public GraphDatabaseService graphDbService;
@@ -203,4 +210,60 @@ public class DBServiceImpl implements DBService {
         this.indexService = indexService;
     }
 
+    @Override
+    public boolean addRelation(String uuid1, String uuid2) {
+        if (uuid1.equals(uuid2)) {
+            return false;
+        }
+        Node node1 = fetchNode(uuid1);
+        Node node2 = fetchNode(uuid2);
+
+        for (Relationship rel : node1.getRelationships(MyRelationshipTypes.KNOWS, Direction.BOTH)) {
+            if (rel.getOtherNode(node1).getProperty("UUID").equals(node2.getProperty("UUID"))) {
+                return false;
+            }
+        }
+
+        Transaction tx = graphDbService.beginTx();
+        try {
+
+            node1.createRelationshipTo(node2, MyRelationshipTypes.KNOWS);
+            tx.success();
+        } finally {
+            tx.finish();
+        }
+        return true;
+    }
+
+    @Override
+    public List<Profile> getRelatedProfiles(String uuid) {
+        Node node = fetchNode(uuid);
+        List<Profile> profiles = new ArrayList<Profile>();
+
+        for (Relationship rel : node.getRelationships(MyRelationshipTypes.KNOWS, Direction.BOTH)) {
+            profiles.add(new ProfileImpl(rel.getOtherNode(node)));
+        }
+
+        return profiles;
+    }
+
+    @Override
+    public boolean removeRelation(String uuid1, String uuid2) {
+
+        Node node1 = fetchNode(uuid1);
+
+        for (Relationship rel : node1.getRelationships(MyRelationshipTypes.KNOWS, Direction.BOTH)) {
+            if (rel.getOtherNode(node1).getProperty("UUID").equals(uuid2)) {
+                Transaction tx = graphDbService.beginTx();
+                try {
+                    rel.delete();
+                    tx.success();
+                } finally {
+                    tx.finish();
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 }

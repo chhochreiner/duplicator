@@ -10,7 +10,7 @@ import at.ac.tuwien.view.profiledata.ProfileData;
 import at.ac.tuwien.view.templateduplication.TemplateGenerator;
 
 public class BasePage extends WebPage {
-
+    private static final long serialVersionUID = -1953236807233668105L;
     protected WebMarkupContainer body;
 
     public BasePage() {

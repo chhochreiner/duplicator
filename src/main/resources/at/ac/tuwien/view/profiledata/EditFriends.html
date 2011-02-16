@@ -1,0 +1,35 @@
+<html xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.5-strict.dtd" >
+<head><title>Edit Friends</title></head>
+<body>
+<wicket:extend>
+<h1><wicket:message key="editFriends">[editFriends]</wicket:message></h1>
+
+	<form id="friendsDataForm" method="post" wicket:id="friendsDataForm">
+		<div wicket:id="success" class="success">success message</div>
+		<div wicket:id="error" class="error">error message</div>
+
+<ul>
+    <li wicket:id="friends">
+        <span wicket:id="name"></span>  <a href="#" wicket:id="remove"><wicket:message key="remove">[remove]</wicket:message></a>
+        
+    </li>
+</ul>
+	
+		<fieldset>
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="name">[name]</wicket:message>
+				</div>
+				<div class="formField">
+					<input type="text" id="newfriends" wicket:id="newfriends" class="inputText" />
+				</div>
+			</div>
+		</fieldset>
+	</form>	
+
+
+
+	
+</wicket:extend>
+</body>
+</html>
