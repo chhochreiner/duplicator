@@ -45,7 +45,8 @@ font: 76%/170% Verdana, sans-serif;
 
 #profiledata li.profiledata a,
 #templategenerator li.templategenerator a,
-#home li.home a {
+#home li.home a,
+#profileFinder li.profileFinder a {
 	background-color: #444444;
     border-color: #444444;
     padding: 3 10 px;    

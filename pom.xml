@@ -45,7 +45,11 @@
 		    <artifactId>velocity</artifactId>
 		    <version>1.7</version>
 		</dependency>     
-
+		<dependency>
+			<groupId>org.scribe</groupId>
+			<artifactId>scribe</artifactId>
+			<version>1.1.0</version>
+		</dependency>
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

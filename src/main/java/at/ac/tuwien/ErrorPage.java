@@ -22,6 +22,7 @@ public class ErrorPage extends WebPage {
         body.add(new BookmarkablePageLink("home", ErrorPage.class));
         body.add(new BookmarkablePageLink("profiledata", ProfileData.class));
         body.add(new BookmarkablePageLink("templategenerator", TemplateGenerator.class));
+        body.add(new BookmarkablePageLink("profileFinder", ProfileFinder.class));
 
         body.add(new Label("feedback", parameters.get("error").toString()));
 

@@ -1,0 +1,40 @@
+<html xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.5-strict.dtd" >
+<head><title>Home</title></head>
+<body>
+<wicket:extend>
+<h1><wicket:message key="profileFinder">[profileFinder]</wicket:message></h1>
+<a href="#" target="_blank" wicket:id="linkedInLink">more information</a>
+	<form id=activationForm method="post" wicket:id="activationForm">
+		<div wicket:id="success" class="success">success message</div>
+		<div wicket:id="error" class="error">error message</div>
+	
+		<fieldset>
+			
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="linkedIn">[linkedIn]</wicket:message>
+				</div>
+				<div class="formField">
+					<input type="text" id="linkedIn" wicket:id="linkedIn" class="inputText" />
+					<div wicket:id="linkedInErrors" class="inputFieldError">[Errormessages]</div>
+				</div>
+			</div>
+		</fieldset>
+				
+		<div class="formSubmit">
+			<input type="submit" value="submit" wicket:message="value:global.button.submit" />
+		</div>
+	</form>
+
+<h2><wicket:message key="profileFinder">[linkedInUsersHeadline]</wicket:message></h2>
+<table>
+  <tr wicket:id="linkedInUsers">
+    <td><img wicket:id="profile-image"/></td>
+    <td><span wicket:id="name"></span></td>
+  </tr>
+</table>
+
+
+</wicket:extend>
+</body>
+</html>

@@ -29,5 +29,8 @@
 		<property name="dbService" ref="DBService" />
 	</bean>
 
+	<bean id="APIService" class="at.ac.tuwien.service.impl.APIServiceImpl">
+		<property name="dbService" ref="DBService" />
+	</bean>
 
 </beans>
