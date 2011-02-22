@@ -2,7 +2,7 @@ package at.ac.tuwien.service;
 
 import java.util.List;
 
-import org.scribe.oauth.OAuthService;
+import org.scribe.model.Token;
 
 public interface APIService {
 
@@ -12,5 +12,13 @@ public interface APIService {
 
     public List<String[]> executeLinkedInQuery(String uuid);
 
-    public OAuthService alreadySet();
+    public String getTwitterRequestURL();
+
+    public void verifyTwitter(String code);
+
+    public List<String[]> executeTwitterQuery(String uuid);
+
+    public Token alreadySet();
+
+    public String excecuteXingQuery(String uuid);
 }

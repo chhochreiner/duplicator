@@ -3,7 +3,10 @@
 <body>
 <wicket:extend>
 <h1><wicket:message key="profileFinder">[profileFinder]</wicket:message></h1>
-<a href="#" target="_blank" wicket:id="linkedInLink">more information</a>
+<ul>
+	<li><a href="#" target="_blank" wicket:id="linkedInLink">[linkedInLink]</a></li>
+	<li><a href="#" target="_blank" wicket:id="twitterLink">[twitterLink]</a></li>
+</ul>
 	<form id=activationForm method="post" wicket:id="activationForm">
 		<div wicket:id="success" class="success">success message</div>
 		<div wicket:id="error" class="error">error message</div>
@@ -19,6 +22,15 @@
 					<div wicket:id="linkedInErrors" class="inputFieldError">[Errormessages]</div>
 				</div>
 			</div>
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="twitter">[twitter]</wicket:message>
+				</div>
+				<div class="formField">
+					<input type="text" id="twitter" wicket:id="twitter" class="inputText" />
+					<div wicket:id="twitterErrors" class="inputFieldError">[Errormessages]</div>
+				</div>
+			</div>			
 		</fieldset>
 				
 		<div class="formSubmit">
@@ -26,7 +38,7 @@
 		</div>
 	</form>
 
-<h2><wicket:message key="profileFinder">[linkedInUsersHeadline]</wicket:message></h2>
+<h2><wicket:message key="linkedInUsersHeadline">[linkedInUsersHeadline]</wicket:message></h2>
 <table>
   <tr wicket:id="linkedInUsers">
     <td><img wicket:id="profile-image"/></td>
@@ -34,6 +46,17 @@
   </tr>
 </table>
 
+<h2><wicket:message key="twitterUsersHeadline">[twitterUsersHeadline]</wicket:message></h2>
+<table>
+  <tr wicket:id="twitterUsers">
+    <td><img wicket:id="profile-image"/></td>
+    <td><span wicket:id="name"></span></td>
+  </tr>
+</table>
+
+<h2><wicket:message key="XINGUsersHeadline">[XINGUsersHeadline]</wicket:message></h2>
+
+<iframe wicket:id="XINGuser" width="90%" height="300px"></iframe>
 
 </wicket:extend>
 </body>

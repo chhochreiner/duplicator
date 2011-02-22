@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebComponent;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
@@ -31,6 +34,9 @@ public class ProfileFinder extends BasePage {
 
     private Model<String> linkedInCode = new Model<String>();
     private ListView<String[]> linkedInUsers;
+    private Model<String> twitterCode = new Model<String>();
+    private ListView<String[]> twitterUsers;
+    private Component XingUser;
 
     public ProfileFinder() {
 
@@ -39,21 +45,34 @@ public class ProfileFinder extends BasePage {
         body.add(new ExternalLink("linkedInLink", apiService.getLinkedInRequestURL(),
             "LinkedIn Verification"));
 
+        body.add(new ExternalLink("twitterLink", apiService.getTwitterRequestURL(),
+            "Twitter Verification"));
+
         activationForm = new FormTemplate("activationForm") {
             private static final long serialVersionUID = 4775409828987880486L;
 
             @Override
             public void saveAction() {
-                apiService.verifyLinkedIn(linkedInCode.getObject());
-                linkedInUsers.setList(apiService.executeLinkedInQuery("uuid"));
+                // apiService.verifyLinkedIn(linkedInCode.getObject());
+                // linkedInUsers.setList(apiService.executeLinkedInQuery("uuid"));
+
+                apiService.verifyTwitter(twitterCode.getObject());
+                twitterUsers.setList(apiService.executeTwitterQuery("uuid"));
+
+                XingUser = new WebMarkupContainer("XINGuser").add(new SimpleAttributeModifier("src",
+                    apiService.excecuteXingQuery("uuid")));
+                body.addOrReplace(XingUser);
+                XingUser.setVisible(true);
             }
 
             @Override
             public void setupForm() {
                 RequiredTextField<String> linkedIn = new RequiredTextField<String>("linkedIn", linkedInCode);
+                RequiredTextField<String> twitter = new RequiredTextField<String>("twitter", twitterCode);
 
-                add(linkedIn);
+                add(linkedIn, twitter);
                 add(new ComponentFeedbackPanel("linkedInErrors", linkedIn));
+                add(new ComponentFeedbackPanel("twitterErrors", twitter));
             }
         };
 
@@ -70,6 +89,17 @@ public class ProfileFinder extends BasePage {
             }
         };
 
+        twitterUsers = new ListView<String[]>("twitterUsers", dummyList) {
+            private static final long serialVersionUID = 2265469743009974359L;
+
+            @Override
+            protected void populateItem(ListItem<String[]> item) {
+                String[] profile = item.getModelObject();
+                item.add(new Label("name", profile[1]));
+                item.add(new ProfileImage("profile-image", new Model<String>(profile[2])));
+            }
+        };
+
         if (apiService.alreadySet() != null) {
             activationForm.setVisible(false);
         }
@@ -77,6 +107,16 @@ public class ProfileFinder extends BasePage {
 
         linkedInUsers.setOutputMarkupId(true);
         body.add(linkedInUsers);
+
+        twitterUsers.setOutputMarkupId(true);
+        body.add(twitterUsers);
+
+        XingUser = new WebMarkupContainer("XINGuser").add(new SimpleAttributeModifier("src",
+            ""));
+        XingUser.setVisible(false);
+        XingUser.setOutputMarkupId(true);
+        body.add(XingUser);
+
     }
 
     private class ProfileImage extends WebComponent {

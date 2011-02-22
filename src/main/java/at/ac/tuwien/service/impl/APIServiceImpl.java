@@ -14,6 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LinkedInApi;
+import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -34,9 +35,13 @@ public class APIServiceImpl implements APIService {
     @SpringBean(name = "DBService")
     public DBService dbService;
 
-    private OAuthService linkedInService;
+    private OAuthService linkedInService = null;
     private Token linkedInRequestToken;
     private Token linkedInAccessToken;
+
+    private OAuthService twitterService;
+    private Token twitterRequestToken;
+    private Token twitterAccessToken;
 
     public APIServiceImpl() {
 
@@ -46,6 +51,13 @@ public class APIServiceImpl implements APIService {
             .apiSecret("kFJXV98FOMibMfHSFk4vc_3wSA4YzXVVYLu9afXXfhsoqRe7FtUkmTqcYlY5c5hA")
             .build();
         linkedInRequestToken = linkedInService.getRequestToken();
+
+        twitterService = new ServiceBuilder()
+            .provider(TwitterApi.class)
+            .apiKey("oDbrOUXFZz7Nc1MsHPtsbg")
+            .apiSecret("ABWpSXT52gnVz9vagTvJhHvwJO1H2Ox6GzTRBZr0")
+            .build();
+        twitterRequestToken = twitterService.getRequestToken();
     }
 
     @Override
@@ -56,7 +68,6 @@ public class APIServiceImpl implements APIService {
     @Override
     public void verifyLinkedIn(String code) {
         Verifier verifier = new Verifier(code);
-
         linkedInAccessToken = linkedInService.getAccessToken(linkedInRequestToken, verifier);
     }
 
@@ -137,11 +148,92 @@ public class APIServiceImpl implements APIService {
             e.printStackTrace();
         }
         return result;
-
     }
 
     @Override
-    public OAuthService alreadySet() {
-        return linkedInService;
+    public Token alreadySet() {
+        return linkedInAccessToken;
     }
+
+    @Override
+    public String excecuteXingQuery(String uuid) {
+        return "https://www.xing.com/search/people?search%5Bq%5D=markus+huber&send=1";
+    }
+
+    @Override
+    public String getTwitterRequestURL() {
+        return twitterService.getAuthorizationUrl(twitterRequestToken);
+    }
+
+    @Override
+    public void verifyTwitter(String code) {
+        Verifier verifier = new Verifier(code);
+        twitterAccessToken = twitterService.getAccessToken(twitterRequestToken, verifier);
+    }
+
+    @Override
+    public List<String[]> executeTwitterQuery(String uuid) {
+        // Map<String, String> data = dbService.fetchProfileData(uuid);
+
+        Map<String, String> data = new HashMap<String, String>();
+
+        data.put("prename", "Markus");
+        data.put("surname", ".Huber");
+
+        String resource =
+            "http://api.twitter.com/1/users/search.xml?q=" + data.get("prename") + data.get("surname") + "&per_page=10";
+        System.out.print(resource);
+        OAuthRequest request = new OAuthRequest(Verb.GET, resource);
+        twitterService.signRequest(twitterAccessToken, request);
+        Response response = request.send();
+        System.out.print(response.getBody());
+
+        return parseTwitterXML(response.getBody());
+    }
+
+    private List<String[]> parseTwitterXML(String XML) {
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+        List<String[]> result = new ArrayList<String[]>();
+
+        try {
+            InputSource is = new InputSource();
+            is.setCharacterStream(new StringReader(XML));
+
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(is);
+
+            NodeList persons = doc.getElementsByTagName("user");
+            for (int i = 0; i < persons.getLength(); i++) {
+
+                String[] buffer = new String[4];
+
+                Element person = (Element) persons.item(i);
+                NodeList id = person.getElementsByTagName("id");
+                NodeList name = person.getElementsByTagName("name");
+                NodeList pictureURL = person.getElementsByTagName("profile_image_url");
+
+                buffer[0] = id.item(0).getFirstChild().getTextContent();
+                buffer[1] = name.item(0).getFirstChild().getTextContent();
+                if (pictureURL.item(0) != null) {
+                    buffer[2] = pictureURL.item(0).getFirstChild().getTextContent();
+                }
+
+                result.add(buffer);
+            }
+
+        } catch (ParserConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SAXException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }
