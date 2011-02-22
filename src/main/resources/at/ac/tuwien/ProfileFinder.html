@@ -37,8 +37,28 @@
 			<input type="submit" value="submit" wicket:message="value:global.button.submit" />
 		</div>
 	</form>
+	
+		<form id="queryForm" method="post" wicket:id="queryForm">
+		<div wicket:id="success" class="success">success message</div>
+		<div wicket:id="error" class="error">error message</div>
 
-<h2><wicket:message key="linkedInUsersHeadline">[linkedInUsersHeadline]</wicket:message></h2>
+		<fieldset>
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="name">[name]</wicket:message>
+				</div>
+				<div class="formField">
+					<input type="text" id="user" wicket:id="user" class="inputText" />
+				</div>
+			</div>
+		</fieldset>
+		
+		<div class="formSubmit">
+		<input wicket:id="submit" type="submit" wicket:message="value:global.button.submit"/>
+		</div>
+		
+		
+		<h2><wicket:message key="linkedInUsersHeadline">[linkedInUsersHeadline]</wicket:message></h2>
 <table>
   <tr wicket:id="linkedInUsers">
     <td><img wicket:id="profile-image"/></td>
@@ -57,6 +77,11 @@
 <h2><wicket:message key="XINGUsersHeadline">[XINGUsersHeadline]</wicket:message></h2>
 
 <iframe wicket:id="XINGuser" width="90%" height="300px"></iframe>
+		
+		
+	</form>	
+	
+
 
 </wicket:extend>
 </body>

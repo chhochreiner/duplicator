@@ -43,6 +43,10 @@ public class APIServiceImpl implements APIService {
     private Token twitterRequestToken;
     private Token twitterAccessToken;
 
+    private OAuthService facebookService;
+    private Token facebookRequestToken;
+    private Token facebookAccessToken;
+
     public APIServiceImpl() {
 
         linkedInService = new ServiceBuilder()
@@ -234,6 +238,24 @@ public class APIServiceImpl implements APIService {
             e.printStackTrace();
         }
         return result;
+    }
+
+    @Override
+    public String getFacebookRequestURL() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void verifyFacebook(String code) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public List<String[]> executeFacebookQuery(String uuid) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

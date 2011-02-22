@@ -18,6 +18,12 @@ public interface APIService {
 
     public List<String[]> executeTwitterQuery(String uuid);
 
+    public String getFacebookRequestURL();
+
+    public void verifyFacebook(String code);
+
+    public List<String[]> executeFacebookQuery(String uuid);
+
     public Token alreadySet();
 
     public String excecuteXingQuery(String uuid);
