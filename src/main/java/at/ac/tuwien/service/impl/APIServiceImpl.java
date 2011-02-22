@@ -3,7 +3,6 @@ package at.ac.tuwien.service.impl;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,13 +77,7 @@ public class APIServiceImpl implements APIService {
     @Override
     public List<String[]> executeLinkedInQuery(String uuid) {
 
-        // Map<String, String> data = dbService.fetchProfileData(uuid);
-
-        Map<String, String> data = new HashMap<String, String>();
-
-        data.put("prename", "Markus");
-        data.put("surname", "Huber");
-        // data.put("country-code", "Austria");
+        Map<String, String> data = dbService.fetchProfileData(uuid);
 
         String resource =
             "http://api.linkedin.com/v1/people-search";
@@ -161,7 +154,10 @@ public class APIServiceImpl implements APIService {
 
     @Override
     public String excecuteXingQuery(String uuid) {
-        return "https://www.xing.com/search/people?search%5Bq%5D=markus+huber&send=1";
+        Map<String, String> data = dbService.fetchProfileData(uuid);
+
+        return "https://www.xing.com/search/people?search%5Bq%5D=" + data.get("prename") + "+" + data.get("surname")
+                + "&send=1";
     }
 
     @Override
@@ -177,15 +173,11 @@ public class APIServiceImpl implements APIService {
 
     @Override
     public List<String[]> executeTwitterQuery(String uuid) {
-        // Map<String, String> data = dbService.fetchProfileData(uuid);
-
-        Map<String, String> data = new HashMap<String, String>();
-
-        data.put("prename", "Markus");
-        data.put("surname", ".Huber");
+        Map<String, String> data = dbService.fetchProfileData(uuid);
 
         String resource =
-            "http://api.twitter.com/1/users/search.xml?q=" + data.get("prename") + data.get("surname") + "&per_page=10";
+            "http://api.twitter.com/1/users/search.xml?q=" + data.get("prename") + "." + data.get("surname")
+                    + "&per_page=10";
         System.out.print(resource);
         OAuthRequest request = new OAuthRequest(Verb.GET, resource);
         twitterService.signRequest(twitterAccessToken, request);

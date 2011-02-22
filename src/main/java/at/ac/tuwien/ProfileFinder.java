@@ -71,6 +71,7 @@ public class ProfileFinder extends BasePage {
                 apiService.verifyTwitter(twitterCode.getObject());
 
                 queryForm.setVisible(true);
+                activationForm.setVisible(false);
             }
 
             @Override
@@ -108,9 +109,10 @@ public class ProfileFinder extends BasePage {
             }
         };
 
-        if (apiService.alreadySet() != null) {
-            activationForm.setVisible(false);
-        }
+        // if (apiService.alreadySet() != null) {
+        // activationForm.setVisible(false);
+        // queryForm.setVisible(true);
+        // }
         body.add(activationForm);
 
         final List<KeyValueEntry> possibleFriends = new ArrayList<KeyValueEntry>();
