@@ -51,6 +51,7 @@ public class ProfileFinder extends BasePage {
     private Model<String> twitterCode = new Model<String>();
     private ListView<String[]> twitterUsers;
     private Component XingUser;
+    private Component FacebookUser;
     private ExternalLink linkedInLink;
     private ExternalLink twitterLink;
 
@@ -171,6 +172,13 @@ public class ProfileFinder extends BasePage {
                 XingUser.setOutputMarkupId(true);
                 queryForm.addOrReplace(XingUser);
                 XingUser.setVisible(true);
+
+                FacebookUser = new WebMarkupContainer("FacebookUser").add(new SimpleAttributeModifier("src",
+                    apiService.executeFacebookQuery(uuid)));
+                FacebookUser.setOutputMarkupId(true);
+                queryForm.addOrReplace(FacebookUser);
+                FacebookUser.setVisible(true);
+
                 activationForm.setVisible(false);
                 target.add(queryForm);
                 target.add(activationForm);
@@ -207,6 +215,12 @@ public class ProfileFinder extends BasePage {
         XingUser.setVisible(false);
         XingUser.setOutputMarkupId(true);
         queryForm.add(XingUser);
+
+        FacebookUser = new WebMarkupContainer("FacebookUser").add(new SimpleAttributeModifier("src",
+            ""));
+        FacebookUser.setVisible(false);
+        FacebookUser.setOutputMarkupId(true);
+        queryForm.add(FacebookUser);
 
         queryForm.setOutputMarkupId(true);
         queryForm.setVisible(false);

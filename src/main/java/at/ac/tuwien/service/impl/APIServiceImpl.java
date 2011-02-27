@@ -48,10 +48,6 @@ public class APIServiceImpl implements APIService {
     private Token twitterRequestToken;
     private Token twitterAccessToken = null;
 
-    private OAuthService facebookService;
-    private Token facebookRequestToken;
-    private Token facebookAccessToken;
-
     public APIServiceImpl() {
 
         linkedInService = new ServiceBuilder()
@@ -66,13 +62,12 @@ public class APIServiceImpl implements APIService {
             .apiSecret("ABWpSXT52gnVz9vagTvJhHvwJO1H2Ox6GzTRBZr0")
             .build();
 
-        if (!restoreToken("twitter")) {
-            twitterRequestToken = twitterService.getRequestToken();
-        }
+        restoreToken("twitter");
+        restoreToken("linkedin");
 
-        if (!restoreToken("linkedin")) {
-            linkedInRequestToken = linkedInService.getRequestToken();
-        }
+        twitterRequestToken = twitterService.getRequestToken();
+        linkedInRequestToken = linkedInService.getRequestToken();
+
     }
 
     @Override
@@ -177,6 +172,14 @@ public class APIServiceImpl implements APIService {
     }
 
     @Override
+    public String executeFacebookQuery(String uuid) {
+        Map<String, String> data = dbService.fetchProfileData(uuid);
+
+        return "http://www.facebook.com/search.php?init=dir&q=" + data.get("prename") + "+" + data.get("surname")
+                + "&type=users";
+    }
+
+    @Override
     public String getTwitterRequestURL() {
         return twitterService.getAuthorizationUrl(twitterRequestToken);
     }
@@ -247,24 +250,6 @@ public class APIServiceImpl implements APIService {
         return result;
     }
 
-    @Override
-    public String getFacebookRequestURL() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void verifyFacebook(String code) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public List<String[]> executeFacebookQuery(String uuid) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     private void storeToken(String name, Token token, Verifier verifier) {
 
         if (!(new File("appdata/token")).exists()) {
@@ -286,13 +271,12 @@ public class APIServiceImpl implements APIService {
 
     private boolean restoreToken(String name) {
 
-        if ((!(new File("appdata/token/" + name + "_token")).exists())
-                || (!(new File("appdata/token/" + name + "_verifier")).exists())) {
+        if (!(new File("appdata/token/" + name)).exists()) {
             return false;
         }
 
         try {
-            FileInputStream tokenFile = new FileInputStream("appdata/token/" + name + "_token");
+            FileInputStream tokenFile = new FileInputStream("appdata/token/" + name);
             ObjectInputStream tokenStream = new ObjectInputStream(tokenFile);
 
             if (name.equals("twitter")) {
