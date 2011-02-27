@@ -1,6 +1,12 @@
 package at.ac.tuwien.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +40,13 @@ public class APIServiceImpl implements APIService {
     @SpringBean(name = "DBService")
     public DBService dbService;
 
-    private OAuthService linkedInService = null;
+    private OAuthService linkedInService;
     private Token linkedInRequestToken;
-    private Token linkedInAccessToken;
+    private Token linkedInAccessToken = null;
 
     private OAuthService twitterService;
     private Token twitterRequestToken;
-    private Token twitterAccessToken;
+    private Token twitterAccessToken = null;
 
     private OAuthService facebookService;
     private Token facebookRequestToken;
@@ -53,14 +59,20 @@ public class APIServiceImpl implements APIService {
             .apiKey("KbvaulneD9ML6w4hDfI16cx58LJx3vEudgiC_NWtLSkq6WpkhpINeZVrrKwVZKDE")
             .apiSecret("kFJXV98FOMibMfHSFk4vc_3wSA4YzXVVYLu9afXXfhsoqRe7FtUkmTqcYlY5c5hA")
             .build();
-        linkedInRequestToken = linkedInService.getRequestToken();
 
         twitterService = new ServiceBuilder()
             .provider(TwitterApi.class)
             .apiKey("oDbrOUXFZz7Nc1MsHPtsbg")
             .apiSecret("ABWpSXT52gnVz9vagTvJhHvwJO1H2Ox6GzTRBZr0")
             .build();
-        twitterRequestToken = twitterService.getRequestToken();
+
+        if (!restoreToken("twitter")) {
+            twitterRequestToken = twitterService.getRequestToken();
+        }
+
+        if (!restoreToken("linkedin")) {
+            linkedInRequestToken = linkedInService.getRequestToken();
+        }
     }
 
     @Override
@@ -72,6 +84,7 @@ public class APIServiceImpl implements APIService {
     public void verifyLinkedIn(String code) {
         Verifier verifier = new Verifier(code);
         linkedInAccessToken = linkedInService.getAccessToken(linkedInRequestToken, verifier);
+        storeToken("linkedin", linkedInAccessToken, verifier);
     }
 
     @Override
@@ -148,8 +161,11 @@ public class APIServiceImpl implements APIService {
     }
 
     @Override
-    public Token alreadySet() {
-        return linkedInAccessToken;
+    public boolean alreadySet() {
+        if ((linkedInAccessToken == null) || (twitterAccessToken == null)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -169,6 +185,7 @@ public class APIServiceImpl implements APIService {
     public void verifyTwitter(String code) {
         Verifier verifier = new Verifier(code);
         twitterAccessToken = twitterService.getAccessToken(twitterRequestToken, verifier);
+        storeToken("twitter", linkedInAccessToken, verifier);
     }
 
     @Override
@@ -178,11 +195,9 @@ public class APIServiceImpl implements APIService {
         String resource =
             "http://api.twitter.com/1/users/search.xml?q=" + data.get("prename") + "." + data.get("surname")
                     + "&per_page=10";
-        System.out.print(resource);
         OAuthRequest request = new OAuthRequest(Verb.GET, resource);
         twitterService.signRequest(twitterAccessToken, request);
         Response response = request.send();
-        System.out.print(response.getBody());
 
         return parseTwitterXML(response.getBody());
     }
@@ -248,6 +263,51 @@ public class APIServiceImpl implements APIService {
     public List<String[]> executeFacebookQuery(String uuid) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    private void storeToken(String name, Token token, Verifier verifier) {
+
+        if (!(new File("appdata/token")).exists()) {
+            new File("appdata/token").mkdirs();
+        }
+
+        try {
+            FileOutputStream tokenFile = new FileOutputStream("appdata/token/" + name);
+            ObjectOutputStream tokenStream = new ObjectOutputStream(tokenFile);
+            tokenStream.writeObject(token);
+            tokenStream.flush();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean restoreToken(String name) {
+
+        if ((!(new File("appdata/token/" + name + "_token")).exists())
+                || (!(new File("appdata/token/" + name + "_verifier")).exists())) {
+            return false;
+        }
+
+        try {
+            FileInputStream tokenFile = new FileInputStream("appdata/token/" + name + "_token");
+            ObjectInputStream tokenStream = new ObjectInputStream(tokenFile);
+
+            if (name.equals("twitter")) {
+                twitterAccessToken = (Token) tokenStream.readObject();
+            }
+
+            if (name.equals("linkedin")) {
+                linkedInAccessToken = (Token) tokenStream.readObject();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
 }

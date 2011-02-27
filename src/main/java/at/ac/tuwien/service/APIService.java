@@ -2,8 +2,6 @@ package at.ac.tuwien.service;
 
 import java.util.List;
 
-import org.scribe.model.Token;
-
 public interface APIService {
 
     public String getLinkedInRequestURL();
@@ -24,7 +22,7 @@ public interface APIService {
 
     public List<String[]> executeFacebookQuery(String uuid);
 
-    public Token alreadySet();
+    public boolean alreadySet();
 
     public String excecuteXingQuery(String uuid);
 }

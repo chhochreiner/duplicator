@@ -51,16 +51,19 @@ public class ProfileFinder extends BasePage {
     private Model<String> twitterCode = new Model<String>();
     private ListView<String[]> twitterUsers;
     private Component XingUser;
+    private ExternalLink linkedInLink;
+    private ExternalLink twitterLink;
 
     public ProfileFinder() {
-
         body.add(new AttributeModifier("id", true, new Model<String>("profileFinder")));
 
-        body.add(new ExternalLink("linkedInLink", apiService.getLinkedInRequestURL(),
-            "LinkedIn Verification"));
+        linkedInLink = new ExternalLink("linkedInLink", apiService.getLinkedInRequestURL(),
+            "LinkedIn Verification");
+        linkedInLink.setOutputMarkupId(true);
 
-        body.add(new ExternalLink("twitterLink", apiService.getTwitterRequestURL(),
-            "Twitter Verification"));
+        twitterLink = new ExternalLink("twitterLink", apiService.getTwitterRequestURL(),
+            "Twitter Verification");
+        twitterLink.setOutputMarkupId(true);
 
         activationForm = new FormTemplate("activationForm") {
             private static final long serialVersionUID = 4775409828987880486L;
@@ -109,12 +112,6 @@ public class ProfileFinder extends BasePage {
             }
         };
 
-        // if (apiService.alreadySet() != null) {
-        // activationForm.setVisible(false);
-        // queryForm.setVisible(true);
-        // }
-        body.add(activationForm);
-
         final List<KeyValueEntry> possibleFriends = new ArrayList<KeyValueEntry>();
 
         for (Profile profile : dbService.getProfiles()) {
@@ -160,6 +157,10 @@ public class ProfileFinder extends BasePage {
                         uuid = entry.getKey();
                         break;
                     }
+                }
+
+                if (uuid.equals("")) {
+                    return;
                 }
 
                 twitterUsers.setList(apiService.executeTwitterQuery(uuid));
@@ -209,7 +210,17 @@ public class ProfileFinder extends BasePage {
 
         queryForm.setOutputMarkupId(true);
         queryForm.setVisible(false);
+
+        if (apiService.alreadySet()) {
+            activationForm.setVisible(false);
+            linkedInLink.setVisible(false);
+            twitterLink.setVisible(false);
+            queryForm.setVisible(true);
+        }
         body.add(queryForm);
+        body.add(linkedInLink);
+        body.add(twitterLink);
+        body.add(activationForm);
 
     }
 
