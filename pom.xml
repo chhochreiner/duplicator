@@ -34,6 +34,12 @@
 			<artifactId>wicket-ioc</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
+		<dependency>
+		  <groupId>com.restfb</groupId>
+		  <artifactId>restfb</artifactId>
+		  <version>1.6.3</version>
+		</dependency>
+		
       <dependency>
          <groupId>org.neo4j</groupId>
          <artifactId>neo4j</artifactId>

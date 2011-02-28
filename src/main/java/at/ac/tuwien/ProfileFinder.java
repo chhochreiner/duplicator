@@ -50,8 +50,8 @@ public class ProfileFinder extends BasePage {
     private ListView<String[]> linkedInUsers;
     private Model<String> twitterCode = new Model<String>();
     private ListView<String[]> twitterUsers;
+    private ListView<String[]> facebookUsers;
     private Component XingUser;
-    private Component FacebookUser;
     private ExternalLink linkedInLink;
     private ExternalLink twitterLink;
 
@@ -103,6 +103,17 @@ public class ProfileFinder extends BasePage {
         };
 
         twitterUsers = new ListView<String[]>("twitterUsers", dummyList) {
+            private static final long serialVersionUID = 2265469743009974359L;
+
+            @Override
+            protected void populateItem(ListItem<String[]> item) {
+                String[] profile = item.getModelObject();
+                item.add(new Label("name", profile[1]));
+                item.add(new ProfileImage("profile-image", new Model<String>(profile[2])));
+            }
+        };
+
+        facebookUsers = new ListView<String[]>("facebookUsers", dummyList) {
             private static final long serialVersionUID = 2265469743009974359L;
 
             @Override
@@ -166,18 +177,16 @@ public class ProfileFinder extends BasePage {
 
                 twitterUsers.setList(apiService.executeTwitterQuery(uuid));
                 linkedInUsers.setList(apiService.executeLinkedInQuery(uuid));
+                facebookUsers.setList(apiService.executeFacebookQuery(uuid));
+
+                queryForm.addOrReplace(new Label("facebookQuery", apiService.getFacebookQuery(uuid)));
+                queryForm.addOrReplace(new Label("linkedinQuery", apiService.getLinkedinQuery(uuid)));
 
                 XingUser = new WebMarkupContainer("XINGuser").add(new SimpleAttributeModifier("src",
                     apiService.excecuteXingQuery(uuid)));
                 XingUser.setOutputMarkupId(true);
                 queryForm.addOrReplace(XingUser);
                 XingUser.setVisible(true);
-
-                FacebookUser = new WebMarkupContainer("FacebookUser").add(new SimpleAttributeModifier("src",
-                    apiService.executeFacebookQuery(uuid)));
-                FacebookUser.setOutputMarkupId(true);
-                queryForm.addOrReplace(FacebookUser);
-                FacebookUser.setVisible(true);
 
                 activationForm.setVisible(false);
                 target.add(queryForm);
@@ -210,17 +219,14 @@ public class ProfileFinder extends BasePage {
         twitterUsers.setOutputMarkupId(true);
         queryForm.add(twitterUsers);
 
+        facebookUsers.setOutputMarkupId(true);
+        queryForm.add(facebookUsers);
+
         XingUser = new WebMarkupContainer("XINGuser").add(new SimpleAttributeModifier("src",
             ""));
         XingUser.setVisible(false);
         XingUser.setOutputMarkupId(true);
         queryForm.add(XingUser);
-
-        FacebookUser = new WebMarkupContainer("FacebookUser").add(new SimpleAttributeModifier("src",
-            ""));
-        FacebookUser.setVisible(false);
-        FacebookUser.setOutputMarkupId(true);
-        queryForm.add(FacebookUser);
 
         queryForm.setOutputMarkupId(true);
         queryForm.setVisible(false);
@@ -231,11 +237,13 @@ public class ProfileFinder extends BasePage {
             twitterLink.setVisible(false);
             queryForm.setVisible(true);
         }
+
+        queryForm.addOrReplace(new Label("facebookQuery", ""));
+        queryForm.addOrReplace(new Label("linkedinQuery", ""));
         body.add(queryForm);
         body.add(linkedInLink);
         body.add(twitterLink);
         body.add(activationForm);
-
     }
 
     private class ProfileImage extends WebComponent {

@@ -35,6 +35,10 @@ import org.xml.sax.SAXException;
 import at.ac.tuwien.service.APIService;
 import at.ac.tuwien.service.DBService;
 
+import com.restfb.DefaultFacebookClient;
+import com.restfb.Facebook;
+import com.restfb.FacebookClient;
+
 public class APIServiceImpl implements APIService {
 
     @SpringBean(name = "DBService")
@@ -49,7 +53,6 @@ public class APIServiceImpl implements APIService {
     private Token twitterAccessToken = null;
 
     public APIServiceImpl() {
-
         linkedInService = new ServiceBuilder()
             .provider(LinkedInApi.class)
             .apiKey("KbvaulneD9ML6w4hDfI16cx58LJx3vEudgiC_NWtLSkq6WpkhpINeZVrrKwVZKDE")
@@ -85,19 +88,7 @@ public class APIServiceImpl implements APIService {
     @Override
     public List<String[]> executeLinkedInQuery(String uuid) {
 
-        Map<String, String> data = dbService.fetchProfileData(uuid);
-
-        String resource =
-            "http://api.linkedin.com/v1/people-search";
-        resource += ":(people:(id,first-name,last-name,picture-url))";
-        resource += "?first-name=" + data.get("prename") + "&last-name="
-                + data.get("surname") + "&count=10";
-
-        if (data.containsKey("country-code")) {
-            resource += "&country-code=" + data.get("country-code");
-        }
-
-        OAuthRequest request = new OAuthRequest(Verb.GET, resource);
+        OAuthRequest request = new OAuthRequest(Verb.GET, getLinkedinQuery(uuid));
         linkedInService.signRequest(linkedInAccessToken, request);
         Response response = request.send();
 
@@ -143,13 +134,10 @@ public class APIServiceImpl implements APIService {
             }
 
         } catch (ParserConfigurationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (SAXException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return result;
@@ -172,11 +160,24 @@ public class APIServiceImpl implements APIService {
     }
 
     @Override
-    public String executeFacebookQuery(String uuid) {
-        Map<String, String> data = dbService.fetchProfileData(uuid);
+    public List<String[]> executeFacebookQuery(String uuid) {
+        List<String[]> result = new ArrayList<String[]>();
 
-        return "http://www.facebook.com/search.php?init=dir&q=" + data.get("prename") + "+" + data.get("surname")
-                + "&type=users";
+        FacebookClient facebookClient =
+            new DefaultFacebookClient(
+                "2227470867|2.dnqYjXrRPguVhb9Xz0QdmQ__.3600.1298894400-100002143020769|IM3SeqJX-WyPioFQKn-XHzdRDqo");
+
+        List<FqlUser> users = facebookClient.executeQuery(getFacebookQuery(uuid), FqlUser.class);
+
+        for (FqlUser user : users) {
+            String[] buffer = new String[4];
+            buffer[0] = user.uid;
+            buffer[1] = user.name;
+            buffer[2] = user.pic_small;
+            result.add(buffer);
+        }
+
+        return result;
     }
 
     @Override
@@ -238,13 +239,10 @@ public class APIServiceImpl implements APIService {
             }
 
         } catch (ParserConfigurationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (SAXException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return result;
@@ -292,6 +290,75 @@ public class APIServiceImpl implements APIService {
             return false;
         }
         return true;
+    }
+
+    public static class FqlUser {
+        @Facebook
+        String uid;
+
+        @Facebook
+        String name;
+
+        @Facebook
+        String pic_small;
+
+        @Override
+        public String toString() {
+            return String.format("%s (%s)", name, uid);
+        }
+    }
+
+    @Override
+    public String getFacebookQuery(String uuid) {
+        Map<String, String> data = dbService.fetchProfileData(uuid);
+        String facebookQuery =
+            "SELECT uid, name, pic_small FROM user WHERE name=\"" + data.get("prename") + " " +
+                    data.get("surname") + "\"";
+
+        if (data.containsKey("birthday")) {
+            facebookQuery += " AND birthday=\" " + data.get("birthday") + "\"";
+        }
+
+        if (data.containsKey("sex")) {
+            facebookQuery += " AND sex=\" " + data.get("sex") + "\"";
+        }
+
+        if (data.containsKey("current_location")) {
+            facebookQuery += " AND current_location=\" " + data.get("current_location") + "\"";
+        }
+
+        if (data.containsKey("email")) {
+            facebookQuery += " AND email=\" " + data.get("email") + "\"";
+        }
+
+        facebookQuery += "LIMIT 1,10";
+
+        return facebookQuery;
+    }
+
+    @Override
+    public String getLinkedinQuery(String uuid) {
+        Map<String, String> data = dbService.fetchProfileData(uuid);
+
+        String linkedInQuery =
+            "http://api.linkedin.com/v1/people-search";
+        linkedInQuery += ":(people:(id,first-name,last-name,picture-url))";
+        linkedInQuery += "?first-name=" + data.get("prename") + "&last-name="
+                + data.get("surname") + "&count=10";
+
+        if (data.containsKey("country-code")) {
+            linkedInQuery += "&country-code=" + data.get("country-code");
+        }
+
+        if (data.containsKey("company-name")) {
+            linkedInQuery += "&company-name=" + data.get("company-name");
+        }
+
+        if (data.containsKey("school-name")) {
+            linkedInQuery += "&school-name=" + data.get("school-name");
+        }
+
+        return linkedInQuery;
     }
 
 }

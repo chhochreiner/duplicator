@@ -58,7 +58,9 @@
 		</div>
 		
 		
-		<h2><wicket:message key="linkedInUsersHeadline">[linkedInUsersHeadline]</wicket:message></h2>
+<h2><wicket:message key="linkedInUsersHeadline">[linkedInUsersHeadline]</wicket:message></h2>
+<span wicket:id="linkedinQuery"></span>
+
 <table>
   <tr wicket:id="linkedInUsers">
     <td><img wicket:id="profile-image"/></td>
@@ -74,15 +76,22 @@
   </tr>
 </table>
 
+<h2><wicket:message key="FacebookUsersHeadline">[FacebookUsersHeadline]</wicket:message></h2>
+<span wicket:id="facebookQuery"></span>
+
+<table>
+  <tr wicket:id="facebookUsers">
+    <td><img wicket:id="profile-image"/></td>
+    <td><span wicket:id="name"></span></td>
+  </tr>
+</table>
+		
+
 <h2><wicket:message key="XINGUsersHeadline">[XINGUsersHeadline]</wicket:message></h2>
 
 <iframe wicket:id="XINGuser" width="90%" height="300px"></iframe>
 
-<h2><wicket:message key="FacebookUsersHeadline">[FacebookUsersHeadline]</wicket:message></h2>
 
-<iframe wicket:id="FacebookUser" width="90%" height="300px"></iframe>
-
-		
 		
 	</form>	
 	

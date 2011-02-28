@@ -16,7 +16,11 @@ public interface APIService {
 
     public List<String[]> executeTwitterQuery(String uuid);
 
-    public String executeFacebookQuery(String uuid);
+    public List<String[]> executeFacebookQuery(String uuid);
+
+    public String getFacebookQuery(String uuid);
+
+    public String getLinkedinQuery(String uuid);
 
     public boolean alreadySet();
 
