@@ -60,8 +60,8 @@ public class TemplateGenerator extends BasePage {
 
         renderer = new ChoiceRenderer<HelperContainer>("name", "name");
         templates = new Palette<HelperContainer>("templates", new ListModel<HelperContainer>(
-                new ArrayList<HelperContainer>()), new CollectionModel<HelperContainer>(templatedata), renderer, 10,
-                true);
+            new ArrayList<HelperContainer>()), new CollectionModel<HelperContainer>(templatedata), renderer, 10,
+            true);
 
         templateDataForm = new FormTemplate("templateDataForm") {
             private static final long serialVersionUID = -3481033707162528991L;
@@ -115,13 +115,7 @@ public class TemplateGenerator extends BasePage {
             }
 
             private File generateReturnFile(final List<File> generatedFiles) {
-                final File returnfile;
-                if (generatedFiles.size() > 1) {
-                    returnfile = templateService.createTestSuiteZip(generatedFiles);
-                } else {
-                    returnfile = generatedFiles.get(0);
-                }
-                return returnfile;
+                return templateService.generateTestsuite(generatedFiles);
             }
 
             @Override

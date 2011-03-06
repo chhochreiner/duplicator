@@ -11,8 +11,8 @@ public interface TemplateService {
 
     public String checkGeneratedTest(File file);
 
-    public File createTestSuiteZip(List<File> files);
-
     public File generateVcardExport(List<Profile> profiles);
+
+    public File generateTestsuite(List<File> files);
 
 }

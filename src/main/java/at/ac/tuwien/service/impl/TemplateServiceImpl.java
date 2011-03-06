@@ -3,9 +3,7 @@ package at.ac.tuwien.service.impl;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -118,66 +114,45 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public File createTestSuiteZip(List<File> files) {
+    public File generateTestsuite(List<File> files) {
 
-        files.add(generateTestsuite(files));
+        String result =
+            "import org.openqa.selenium.*;" + "\n" +
+                    "import org.openqa.selenium.firefox.FirefoxDriver;" + "\n" +
+                    "import java.util.Scanner;" + "\n" +
+                    "public class Generator  {" + "\n" +
+                    "public static void main(String[] args) {" + "\n";
 
-        byte[] buf = new byte[1024];
-        fileRemover("appdata/temp/templates.zip");
-        String outFilename = "appdata/temp/templates.zip";
-
-        try {
-            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(outFilename));
-
-            for (File file : files) {
-                FileInputStream in = new FileInputStream(file);
-                out.putNextEntry(new ZipEntry(file.getName()));
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                out.closeEntry();
-                in.close();
-            }
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return (new File(outFilename));
-    }
-
-    private File generateTestsuite(List<File> files) {
-
-        String result = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                + "\n"
-                + "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\""
-                + "\n"
-                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
-                + "\n"
-                + "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">"
-                + "\n"
-                + "<head>"
-                + "\n"
-                + "<meta content=\"text/html; charset=UTF-8\" http-equiv=\"content-type\" />"
-                + "\n"
-                + "<title>Test Suite</title>"
-                + "\n"
-                + "</head>"
-                + "\n"
-                + "<body>"
-                + "\n"
-                + "<table id=\"suiteTable\" cellpadding=\"1\" cellspacing=\"1\" border=\"1\" class=\"selenium\"><tbody>"
-                + "\n" + "<tr><td><b>Test Suite</b></td></tr>";
+        String footer =
+            "}" +
+                    "}";
 
         for (File file : files) {
-            result += "<tr><td><a href=\"" + file.getName() + "\">" + file.getName() + "</a></td></tr>";
+            try {
+                FileReader reader = new FileReader(file);
+
+                BufferedReader bufRead = new BufferedReader(reader);
+                StringBuffer text = new StringBuffer();
+
+                String line = bufRead.readLine();
+                while (line != null) {
+                    text.append(line);
+                    text.append("\n");
+                    line = bufRead.readLine();
+                }
+
+                result += text;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
-        result += "</tbody></table>" + "\n" + "</body>" + "\n" + "</html>";
+        result += footer;
 
         try {
-            FileWriter fstream = new FileWriter("appdata/temp/suite.xml");
+            FileWriter fstream = new FileWriter("appdata/temp/Generator.java");
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(result);
             out.close();
@@ -185,7 +160,7 @@ public class TemplateServiceImpl implements TemplateService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return (new File("appdata/temp/suite.xml"));
+        return (new File("appdata/temp/Generator.java"));
     }
 
     private void fileRemover(String name) {
