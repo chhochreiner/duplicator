@@ -11,18 +11,16 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
-import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.ComponentFeedbackPanel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.Strings;
@@ -98,7 +96,7 @@ public class ProfileFinder extends BasePage {
             protected void populateItem(ListItem<String[]> item) {
                 String[] profile = item.getModelObject();
                 item.add(new Label("name", profile[1] + " " + profile[2]));
-                item.add(new ProfileImage("profile-image", new Model<String>(profile[3])));
+                item.add(new Image("profile-image", new Model<String>(profile[3])));
             }
         };
 
@@ -109,7 +107,7 @@ public class ProfileFinder extends BasePage {
             protected void populateItem(ListItem<String[]> item) {
                 String[] profile = item.getModelObject();
                 item.add(new Label("name", profile[1]));
-                item.add(new ProfileImage("profile-image", new Model<String>(profile[2])));
+                item.add(new Image("profile-image", new Model<String>(profile[2])));
             }
         };
 
@@ -120,7 +118,7 @@ public class ProfileFinder extends BasePage {
             protected void populateItem(ListItem<String[]> item) {
                 String[] profile = item.getModelObject();
                 item.add(new Label("name", profile[1]));
-                item.add(new ProfileImage("profile-image", new Model<String>(profile[2])));
+                item.add(new Image("profile-image", new Model<String>(profile[2])));
             }
         };
 
@@ -244,20 +242,5 @@ public class ProfileFinder extends BasePage {
         body.add(linkedInLink);
         body.add(twitterLink);
         body.add(activationForm);
-    }
-
-    private class ProfileImage extends WebComponent {
-        private static final long serialVersionUID = -2765370962595118048L;
-
-        public ProfileImage(String id, IModel<String> model) {
-            super(id, model);
-        }
-
-        @Override
-        protected void onComponentTag(ComponentTag tag) {
-            super.onComponentTag(tag);
-            checkComponentTag(tag, "img");
-            tag.put("src", getDefaultModelObjectAsString());
-        }
     }
 }

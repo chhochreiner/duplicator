@@ -1,0 +1,20 @@
+<html xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.5-strict.dtd" >
+<head><title>Image Upload</title></head>
+<body>
+<wicket:extend>
+<h1><wicket:message key="uploadImage">[uploadImage]</wicket:message></h1>
+
+<wicket:message key="helpmessage">[helpmessage]</wicket:message>
+	<form wicket:id="uploadForm">
+		<p>
+			<label for="upload"><wicket:message key="file">[File]</wicket:message></label>
+			<input wicket:id="fileInput" id="upload" type="file" size="100" />
+		</p>
+		<input id="buttons:submitUpload" type="submit" value="Upload!" wicket:message="value:upload" />
+	</form>
+	<span wicket:id="progress">[Progressbar]</span>
+	<div wicket:id="feedback">[Feedback Panel]</div>
+	
+</wicket:extend>
+</body>
+</html>

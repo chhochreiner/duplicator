@@ -1,5 +1,12 @@
 package at.ac.tuwien.view.profiledata;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,11 +14,13 @@ import java.util.Map;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.DynamicImageResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
 
@@ -46,6 +55,29 @@ public class ProfileDetail extends BasePage {
             throw new RestartResponseException(ErrorPage.class, parameter);
         }
 
+        final String name = "appdata/images/" + uuid.toString() + ".jpg";
+
+        body.add(new Image("profile-image", new DynamicImageResource() {
+            private static final long serialVersionUID = 199083709778570992L;
+
+            @Override
+            protected byte[] getImageData(Attributes arg0) {
+                ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+                try {
+                    InputStream inStream = new FileInputStream(new File(name));
+                    copy(inStream, outStream);
+                    inStream.close();
+                    outStream.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return outStream.toByteArray();
+            }
+
+        }));
+
         body.add(new Label("name", data.get("prename") + " " + data.get("surname")));
         body.add(new Label("emailValue", data.get("email")));
         body.add(new Label("passwordValue", data.get("password")));
@@ -75,7 +107,23 @@ public class ProfileDetail extends BasePage {
 
         body.add(new BookmarkablePageLink<String>("edit", EditProfile.class, parameter));
         body.add(new BookmarkablePageLink<String>("editFriends", EditFriends.class, parameter));
-
+        body.add(new BookmarkablePageLink<String>("uploadImage", UploadImage.class, parameter));
     }
 
+    private void copy(InputStream source, OutputStream destination)
+        throws IOException
+    {
+        try {
+            // Transfer bytes from source to destination
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = source.read(buf)) > 0) {
+                destination.write(buf, 0, len);
+            }
+            source.close();
+            destination.close();
+        } catch (IOException ioe) {
+            throw ioe;
+        }
+    }
 }

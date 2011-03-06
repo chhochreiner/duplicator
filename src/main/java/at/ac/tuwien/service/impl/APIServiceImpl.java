@@ -165,7 +165,7 @@ public class APIServiceImpl implements APIService {
 
         FacebookClient facebookClient =
             new DefaultFacebookClient(
-                "2227470867|2.dnqYjXrRPguVhb9Xz0QdmQ__.3600.1298894400-100002143020769|IM3SeqJX-WyPioFQKn-XHzdRDqo");
+                "2227470867|2.DUNkm_O81rwLk0WYkhQJvA__.3600.1298991600-100002143020769|nYSOuG7HQs0pUlZfJ6d41GTr3-8");
 
         List<FqlUser> users = facebookClient.executeQuery(getFacebookQuery(uuid), FqlUser.class);
 
