@@ -27,4 +27,6 @@ public interface APIService {
     public String excecuteXingQuery(String uuid);
 
     public void setFacebookToken(String token);
+
+    public boolean checkNetworkId(String network, String uuid);
 }

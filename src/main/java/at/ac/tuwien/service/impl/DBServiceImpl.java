@@ -59,12 +59,22 @@ public class DBServiceImpl implements DBService {
 
     @Override
     public Map<String, String> fetchProfileData(String uuid) {
+        Map<String, String> result = new HashMap<String, String>();
+
         Node profile = fetchNode(uuid);
         if (profile == null) {
-            return null;
-        }
+            String[] name = uuid.split("\\s");
+            result.put("prename", " ");
+            result.put("surname", " ");
+            if (name.length > 0) {
+                result.put("prename", name[0]);
+            }
+            if (name.length > 1) {
+                result.put("surname", name[1]);
+            }
 
-        Map<String, String> result = new HashMap<String, String>();
+            return result;
+        }
 
         for (String key : profile.getPropertyKeys()) {
             result.put(key, profile.getProperty(key).toString());

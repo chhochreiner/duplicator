@@ -366,4 +366,10 @@ public class APIServiceImpl implements APIService {
         this.facebookToken = token;
     }
 
+    @Override
+    public boolean checkNetworkId(String network, String uuid) {
+        Map<String, String> data = dbService.fetchProfileData(uuid);
+        return data.containsKey(network);
+    }
+
 }

@@ -15,7 +15,7 @@
 		<fieldset>
 			<div class="formElement">
 				<div class="formFieldLabel">
-					<wicket:message key="linkedIn">[linkedIn]</wicket:message>
+					<wicket:message key="linkedInCode">[linkedIn]</wicket:message>
 				</div>
 				<div class="formField">
 					<input type="text" id="linkedIn" wicket:id="linkedIn" class="inputText" />
@@ -24,7 +24,7 @@
 			</div>
 			<div class="formElement">
 				<div class="formFieldLabel">
-					<wicket:message key="twitter">[twitter]</wicket:message>
+					<wicket:message key="twitterCode">[twitter]</wicket:message>
 				</div>
 				<div class="formField">
 					<input type="text" id="twitter" wicket:id="twitter" class="inputText" />
@@ -47,7 +47,7 @@
 			
 			<div class="formElement">
 				<div class="formFieldLabel">
-					<wicket:message key="facebook">[facebook]</wicket:message>
+					<wicket:message key="facebookCode">[facebook]</wicket:message>
 				</div>
 				<div class="formField">
 					<input type="text" id="facebook" wicket:id="facebook" class="inputText" />
@@ -76,12 +76,29 @@
 					<input type="text" id="user" wicket:id="user" class="inputText" />
 				</div>
 			</div>
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="name1">[name1]</wicket:message>
+				</div>
+				<div class="formField">
+					<input type="text" id="customUser" wicket:id="customUser" class="inputText" />
+				</div>
+			</div>
 		</fieldset>
 		
 		<div class="formSubmit">
 		<input wicket:id="submit" type="submit" wicket:message="value:global.button.submit"/>
 		</div>
+		</form>	
 		
+<div id="result" wicket:id="result">
+<h2><wicket:message key="availabilityDatabase">[availabilityDatabase]</wicket:message></h2>
+<table>
+<tr><td><wicket:message key="facebook">[facebook]</wicket:message></td><td><span wicket:id="fb_image"></span></td></tr>
+<tr><td><wicket:message key="linkedin">[linkedin]</wicket:message></td><td><span wicket:id="linkedin_image"></span></td></tr>
+<tr><td><wicket:message key="xing">[xing]</wicket:message></td><td><span wicket:id="xing_image"></span></td></tr>
+<tr><td><wicket:message key="twitter">[twitter]</wicket:message></td><td><span wicket:id="twitter_image"></span></td></tr>
+</table>
 		
 <h2><wicket:message key="linkedInUsersHeadline">[linkedInUsersHeadline]</wicket:message></h2>
 <span wicket:id="linkedinQuery"></span>
@@ -115,10 +132,10 @@
 <h2><wicket:message key="XINGUsersHeadline">[XINGUsersHeadline]</wicket:message></h2>
 
 <iframe wicket:id="XINGuser" width="90%" height="300px"></iframe>
-
+</div>
 
 		
-	</form>	
+	
 	
 
 
