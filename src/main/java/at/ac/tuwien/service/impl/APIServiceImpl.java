@@ -52,6 +52,8 @@ public class APIServiceImpl implements APIService {
     private Token twitterRequestToken;
     private Token twitterAccessToken = null;
 
+    private String facebookToken;
+
     public APIServiceImpl() {
         linkedInService = new ServiceBuilder()
             .provider(LinkedInApi.class)
@@ -163,9 +165,7 @@ public class APIServiceImpl implements APIService {
     public List<String[]> executeFacebookQuery(String uuid) {
         List<String[]> result = new ArrayList<String[]>();
 
-        FacebookClient facebookClient =
-            new DefaultFacebookClient(
-                "2227470867|2.DUNkm_O81rwLk0WYkhQJvA__.3600.1298991600-100002143020769|nYSOuG7HQs0pUlZfJ6d41GTr3-8");
+        FacebookClient facebookClient = new DefaultFacebookClient(facebookToken);
 
         List<FqlUser> users = facebookClient.executeQuery(getFacebookQuery(uuid), FqlUser.class);
 
@@ -359,6 +359,11 @@ public class APIServiceImpl implements APIService {
         }
 
         return linkedInQuery;
+    }
+
+    @Override
+    public void setFacebookToken(String token) {
+        this.facebookToken = token;
     }
 
 }

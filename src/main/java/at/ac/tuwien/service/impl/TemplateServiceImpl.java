@@ -3,7 +3,9 @@ package at.ac.tuwien.service.impl;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -120,11 +124,15 @@ public class TemplateServiceImpl implements TemplateService {
             "import org.openqa.selenium.*;" + "\n" +
                     "import org.openqa.selenium.firefox.FirefoxDriver;" + "\n" +
                     "import java.util.Scanner;" + "\n" +
+                    "import java.util.List;" + "\n" +
                     "public class Generator  {" + "\n" +
-                    "public static void main(String[] args) {" + "\n";
+                    "public static void main(String[] args) {" + "\n" +
+                    "Scanner scanner = new Scanner( System.in );" + "\n" +
+                    "WebDriver driver = new FirefoxDriver();" + "\n";
 
         String footer =
-            "}" +
+            "driver.quit();" + "\n" +
+                    "}" + "\n" +
                     "}";
 
         for (File file : files) {
@@ -190,5 +198,33 @@ public class TemplateServiceImpl implements TemplateService {
         }
         return (new File("appdata/temp/contacts.vcf"));
 
+    }
+
+    @Override
+    public File createTestSuiteZip(List<File> files) {
+
+        byte[] buf = new byte[1024];
+        fileRemover("appdata/temp/templates.zip");
+        String outFilename = "appdata/temp/templates.zip";
+
+        try {
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(outFilename));
+
+            for (File file : files) {
+                FileInputStream in = new FileInputStream(file);
+                out.putNextEntry(new ZipEntry(file.getName()));
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                out.closeEntry();
+                in.close();
+            }
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return (new File(outFilename));
     }
 }

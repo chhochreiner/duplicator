@@ -3,16 +3,16 @@
 <body>
 <wicket:extend>
 <h1><wicket:message key="profileFinder">[profileFinder]</wicket:message></h1>
+
+	<form id=activationForm method="post" wicket:id="activationForm">
+		<div wicket:id="success" class="success">success message</div>
+		<div wicket:id="error" class="error">error message</div>
+
 <ul>
 	<li><a href="#" target="_blank" wicket:id="linkedInLink">[linkedInLink]</a></li>
 	<li><a href="#" target="_blank" wicket:id="twitterLink">[twitterLink]</a></li>
 </ul>
-	<form id=activationForm method="post" wicket:id="activationForm">
-		<div wicket:id="success" class="success">success message</div>
-		<div wicket:id="error" class="error">error message</div>
-	
 		<fieldset>
-			
 			<div class="formElement">
 				<div class="formFieldLabel">
 					<wicket:message key="linkedIn">[linkedIn]</wicket:message>
@@ -37,6 +37,31 @@
 			<input type="submit" value="submit" wicket:message="value:global.button.submit" />
 		</div>
 	</form>
+
+
+	<form id=facebookForm method="post" wicket:id="facebookForm">
+		<div wicket:id="success" class="success">success message</div>
+		<div wicket:id="error" class="error">error message</div>
+	
+		<fieldset>
+			
+			<div class="formElement">
+				<div class="formFieldLabel">
+					<wicket:message key="facebook">[facebook]</wicket:message>
+				</div>
+				<div class="formField">
+					<input type="text" id="facebook" wicket:id="facebook" class="inputText" />
+					<div wicket:id="facebookErrors" class="inputFieldError">[Errormessages]</div>
+				</div>
+			</div>
+		</fieldset>
+				
+		<div class="formSubmit">
+			<input type="submit" value="submit" wicket:message="value:global.button.submit" />
+		</div>
+	</form>
+
+
 	
 		<form id="queryForm" method="post" wicket:id="queryForm">
 		<div wicket:id="success" class="success">success message</div>

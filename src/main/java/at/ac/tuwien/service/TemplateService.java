@@ -15,4 +15,6 @@ public interface TemplateService {
 
     public File generateTestsuite(List<File> files);
 
+    public File createTestSuiteZip(List<File> files);
+
 }

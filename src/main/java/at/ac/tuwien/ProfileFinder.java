@@ -42,11 +42,13 @@ public class ProfileFinder extends BasePage {
     private DBService dbService;
 
     private Form<Void> activationForm;
+    private Form<Void> facebookForm;
     private Form<Void> queryForm;
 
     private Model<String> linkedInCode = new Model<String>();
-    private ListView<String[]> linkedInUsers;
     private Model<String> twitterCode = new Model<String>();
+    private Model<String> facebookCode = new Model<String>();
+    private ListView<String[]> linkedInUsers;
     private ListView<String[]> twitterUsers;
     private ListView<String[]> facebookUsers;
     private Component XingUser;
@@ -84,6 +86,26 @@ public class ProfileFinder extends BasePage {
                 add(linkedIn, twitter);
                 add(new ComponentFeedbackPanel("linkedInErrors", linkedIn));
                 add(new ComponentFeedbackPanel("twitterErrors", twitter));
+            }
+        };
+
+        facebookForm = new FormTemplate("facebookForm") {
+            private static final long serialVersionUID = 4775409728987880486L;
+
+            @Override
+            public void saveAction() {
+                apiService.setFacebookToken(facebookCode.getObject());
+
+                queryForm.setVisible(true);
+                facebookForm.setVisible(false);
+            }
+
+            @Override
+            public void setupForm() {
+                RequiredTextField<String> facebook = new RequiredTextField<String>("facebook", facebookCode);
+
+                add(facebook);
+                add(new ComponentFeedbackPanel("facebookErrors", facebook));
             }
         };
 
@@ -239,8 +261,9 @@ public class ProfileFinder extends BasePage {
         queryForm.addOrReplace(new Label("facebookQuery", ""));
         queryForm.addOrReplace(new Label("linkedinQuery", ""));
         body.add(queryForm);
-        body.add(linkedInLink);
-        body.add(twitterLink);
+        activationForm.add(linkedInLink);
+        activationForm.add(twitterLink);
         body.add(activationForm);
+        body.add(facebookForm);
     }
 }

@@ -25,4 +25,6 @@ public interface APIService {
     public boolean alreadySet();
 
     public String excecuteXingQuery(String uuid);
+
+    public void setFacebookToken(String token);
 }

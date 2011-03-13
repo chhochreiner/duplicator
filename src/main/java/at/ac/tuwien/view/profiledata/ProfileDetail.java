@@ -114,7 +114,6 @@ public class ProfileDetail extends BasePage {
         throws IOException
     {
         try {
-            // Transfer bytes from source to destination
             byte[] buf = new byte[1024];
             int len;
             while ((len = source.read(buf)) > 0) {
