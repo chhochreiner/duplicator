@@ -315,22 +315,6 @@ public class APIServiceImpl implements APIService {
             "SELECT uid, name, pic_small FROM user WHERE name=\"" + data.get("prename") + " " +
                     data.get("surname") + "\"";
 
-        if (data.containsKey("birthday")) {
-            facebookQuery += " AND birthday=\" " + data.get("birthday") + "\"";
-        }
-
-        if (data.containsKey("sex")) {
-            facebookQuery += " AND sex=\" " + data.get("sex") + "\"";
-        }
-
-        if (data.containsKey("current_location")) {
-            facebookQuery += " AND current_location=\" " + data.get("current_location") + "\"";
-        }
-
-        if (data.containsKey("email")) {
-            facebookQuery += " AND email=\" " + data.get("email") + "\"";
-        }
-
         facebookQuery += "LIMIT 1,10";
 
         return facebookQuery;

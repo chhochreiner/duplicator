@@ -17,7 +17,6 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -125,7 +124,8 @@ public class ProfileFinder extends BasePage {
             protected void populateItem(ListItem<String[]> item) {
                 String[] profile = item.getModelObject();
                 item.add(new Label("name", profile[1] + " " + profile[2]));
-                item.add(new Image("profile-image", new Model<String>(profile[3])));
+                item.add(new Label("profile-image", "<img src=\"" + profile[3] + "\">")
+                    .setEscapeModelStrings(false));
             }
         };
 
@@ -136,7 +136,8 @@ public class ProfileFinder extends BasePage {
             protected void populateItem(ListItem<String[]> item) {
                 String[] profile = item.getModelObject();
                 item.add(new Label("name", profile[1]));
-                item.add(new Image("profile-image", new Model<String>(profile[2])));
+                item.add(new Label("profile-image", "<img src=\"" + profile[2] + "\">")
+                    .setEscapeModelStrings(false));
             }
         };
 
@@ -147,7 +148,8 @@ public class ProfileFinder extends BasePage {
             protected void populateItem(ListItem<String[]> item) {
                 String[] profile = item.getModelObject();
                 item.add(new Label("name", profile[1]));
-                item.add(new Image("profile-image", new Model<String>(profile[2])));
+                item.add(new Label("profile-image", "<img src=\"" + profile[2] + "\">")
+                    .setEscapeModelStrings(false));
             }
         };
 
