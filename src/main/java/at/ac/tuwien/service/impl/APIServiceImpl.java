@@ -7,14 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.scribe.builder.ServiceBuilder;
@@ -26,12 +21,8 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
+import at.ac.tuwien.domain.Profile;
 import at.ac.tuwien.service.APIService;
 import at.ac.tuwien.service.DBService;
 
@@ -43,6 +34,9 @@ public class APIServiceImpl implements APIService {
 
     @SpringBean(name = "DBService")
     public DBService dbService;
+
+    @SpringBean(name = "xmlService")
+    public XMLServiceImpl xmlService;
 
     private OAuthService linkedInService;
     private Token linkedInRequestToken;
@@ -87,6 +81,10 @@ public class APIServiceImpl implements APIService {
         storeToken("linkedin", linkedInAccessToken, verifier);
     }
 
+    public void setXmlService(XMLServiceImpl xmlService) {
+        this.xmlService = xmlService;
+    }
+
     @Override
     public List<String[]> executeLinkedInQuery(String uuid) {
 
@@ -94,55 +92,11 @@ public class APIServiceImpl implements APIService {
         linkedInService.signRequest(linkedInAccessToken, request);
         Response response = request.send();
 
-        return parseLinkedInXML(response.getBody());
+        return xmlService.parseLinkedInXML(response.getBody());
     }
 
     public void setDbService(DBService dbService) {
         this.dbService = dbService;
-    }
-
-    private List<String[]> parseLinkedInXML(String XML) {
-
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-        List<String[]> result = new ArrayList<String[]>();
-
-        try {
-            InputSource is = new InputSource();
-            is.setCharacterStream(new StringReader(XML));
-
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(is);
-
-            NodeList persons = doc.getElementsByTagName("person");
-            for (int i = 0; i < persons.getLength(); i++) {
-
-                String[] buffer = new String[4];
-
-                Element person = (Element) persons.item(i);
-                NodeList id = person.getElementsByTagName("id");
-                NodeList prename = person.getElementsByTagName("first-name");
-                NodeList surname = person.getElementsByTagName("last-name");
-                NodeList pictureURL = person.getElementsByTagName("picture-url");
-
-                buffer[0] = id.item(0).getFirstChild().getTextContent();
-                buffer[1] = prename.item(0).getFirstChild().getTextContent();
-                buffer[2] = surname.item(0).getFirstChild().getTextContent();
-                if (pictureURL.item(0) != null) {
-                    buffer[3] = pictureURL.item(0).getFirstChild().getTextContent();
-                }
-
-                result.add(buffer);
-            }
-
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 
     @Override
@@ -164,16 +118,43 @@ public class APIServiceImpl implements APIService {
     @Override
     public List<String[]> executeFacebookQuery(String uuid) {
         List<String[]> result = new ArrayList<String[]>();
+        List<Profile> listedfriends = dbService.getRelatedProfiles(uuid);
 
         FacebookClient facebookClient = new DefaultFacebookClient(facebookToken);
 
         List<FqlUser> users = facebookClient.executeQuery(getFacebookQuery(uuid), FqlUser.class);
 
         for (FqlUser user : users) {
+            Integer friendCounter = 0;
             String[] buffer = new String[4];
             buffer[0] = user.uid;
             buffer[1] = user.name;
             buffer[2] = user.pic_small;
+            buffer[3] = friendCounter.toString();
+
+            try {
+                List<FqlUser> friends =
+                    facebookClient
+                        .executeQuery(
+                            "SELECT name,uid FROM user WHERE uid IN ( SELECT target_id FROM connection WHERE source_id="
+                                    + user.uid + " )",
+                            FqlUser.class);
+
+                for (Profile listed : listedfriends) {
+                    String listedString = listed.getPrename() + listed.getSurname();
+                    listedString = listedString.replaceAll("\\s", "");
+                    for (FqlUser friend : friends) {
+                        if ((friend.name.replaceAll("\\s", "")).equals(listedString)) {
+                            friendCounter++;
+                        }
+                    }
+                }
+                buffer[3] = friendCounter.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+                buffer[3] = "-";
+            }
+
             result.add(buffer);
         }
 
@@ -203,49 +184,7 @@ public class APIServiceImpl implements APIService {
         twitterService.signRequest(twitterAccessToken, request);
         Response response = request.send();
 
-        return parseTwitterXML(response.getBody());
-    }
-
-    private List<String[]> parseTwitterXML(String XML) {
-
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-        List<String[]> result = new ArrayList<String[]>();
-
-        try {
-            InputSource is = new InputSource();
-            is.setCharacterStream(new StringReader(XML));
-
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(is);
-
-            NodeList persons = doc.getElementsByTagName("user");
-            for (int i = 0; i < persons.getLength(); i++) {
-
-                String[] buffer = new String[4];
-
-                Element person = (Element) persons.item(i);
-                NodeList id = person.getElementsByTagName("id");
-                NodeList name = person.getElementsByTagName("name");
-                NodeList pictureURL = person.getElementsByTagName("profile_image_url");
-
-                buffer[0] = id.item(0).getFirstChild().getTextContent();
-                buffer[1] = name.item(0).getFirstChild().getTextContent();
-                if (pictureURL.item(0) != null) {
-                    buffer[2] = pictureURL.item(0).getFirstChild().getTextContent();
-                }
-
-                result.add(buffer);
-            }
-
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
+        return xmlService.parseTwitterXML(response.getBody());
     }
 
     private void storeToken(String name, Token token, Verifier verifier) {
@@ -312,8 +251,9 @@ public class APIServiceImpl implements APIService {
     public String getFacebookQuery(String uuid) {
         Map<String, String> data = dbService.fetchProfileData(uuid);
         String facebookQuery =
-            "SELECT uid, name, pic_small FROM user WHERE name=\"" + data.get("prename") + " " +
-                    data.get("surname") + "\"";
+            "SELECT uid, name, pic_small FROM user WHERE name=\"" + data.get("prename")
+                    + " " +
+                    data.get("surname") + "\" ";
 
         facebookQuery += "LIMIT 1,10";
 

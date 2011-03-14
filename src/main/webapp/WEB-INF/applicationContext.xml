@@ -31,6 +31,9 @@
 
 	<bean id="APIService" class="at.ac.tuwien.service.impl.APIServiceImpl" lazy-init="false">
 		<property name="dbService" ref="DBService" />
+		<property name="xmlService" ref="xmlService" />
 	</bean>
+
+	<bean id="xmlService" class="at.ac.tuwien.service.impl.XMLServiceImpl" />
 
 </beans>

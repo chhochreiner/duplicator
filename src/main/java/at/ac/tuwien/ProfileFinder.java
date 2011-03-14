@@ -150,6 +150,7 @@ public class ProfileFinder extends BasePage {
                 item.add(new Label("name", profile[1]));
                 item.add(new Label("profile-image", "<img src=\"" + profile[2] + "\">")
                     .setEscapeModelStrings(false));
+                item.add(new Label("friends", profile[3]));
             }
         };
 
@@ -235,8 +236,8 @@ public class ProfileFinder extends BasePage {
                     result.addOrReplace(new Label("twitter_image", "<img src=\"/fail.png\"/>")
                         .setEscapeModelStrings(false));
                 }
-                twitterUsers.setList(apiService.executeTwitterQuery(uuid));
-                linkedInUsers.setList(apiService.executeLinkedInQuery(uuid));
+                // twitterUsers.setList(apiService.executeTwitterQuery(uuid));
+                // linkedInUsers.setList(apiService.executeLinkedInQuery(uuid));
                 facebookUsers.setList(apiService.executeFacebookQuery(uuid));
 
                 result.addOrReplace(new Label("facebookQuery", apiService.getFacebookQuery(uuid)));
