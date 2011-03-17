@@ -89,9 +89,9 @@
 		<div class="formSubmit">
 		<input wicket:id="submit" type="submit" wicket:message="value:global.button.submit"/>
 		</div>
-		</form>	
-		
-<div id="result" wicket:id="result">
+
+
+<form id=result method="post" wicket:id="result">
 <h2><wicket:message key="availabilityDatabase">[availabilityDatabase]</wicket:message></h2>
 <table>
 <tr><td><wicket:message key="facebook">[facebook]</wicket:message></td><td><span wicket:id="fb_image"></span></td></tr>
@@ -125,7 +125,7 @@
   <tr wicket:id="facebookUsers">
     <td><span wicket:id="profile-image"></span></td>
     <td><span wicket:id="name"></span></td>
-    <td><span wicket:id="friends"></span> connections</td>
+    <!-- <td><span wicket:id="friends"></span> connections</td> -->
   </tr>
 </table>
 		
@@ -133,7 +133,12 @@
 <h2><wicket:message key="XINGUsersHeadline">[XINGUsersHeadline]</wicket:message></h2>
 
 <iframe wicket:id="XINGuser" width="90%" height="300px"></iframe>
-</div>
+</form>
+
+
+		</form>	
+
+
 
 		
 	

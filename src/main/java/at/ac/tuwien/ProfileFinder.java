@@ -44,6 +44,7 @@ public class ProfileFinder extends BasePage {
     private Form<Void> activationForm;
     private Form<Void> facebookForm;
     private Form<Void> queryForm;
+    private Form<Void> result;
 
     private Model<String> linkedInCode = new Model<String>();
     private Model<String> twitterCode = new Model<String>();
@@ -55,14 +56,12 @@ public class ProfileFinder extends BasePage {
     private ExternalLink linkedInLink;
     private ExternalLink twitterLink;
 
-    private WebMarkupContainer result;
-
     public ProfileFinder() {
         body.add(new AttributeModifier("id", true, new Model<String>("profileFinder")));
 
-        result = new WebMarkupContainer("result");
+        result = new Form<Void>("result");
         result.setOutputMarkupId(true);
-        // result.setVisible(false);
+        result.setVisible(false);
 
         linkedInLink = new ExternalLink("linkedInLink", apiService.getLinkedInRequestURL(),
             "LinkedIn Verification");
@@ -81,7 +80,6 @@ public class ProfileFinder extends BasePage {
                 apiService.verifyTwitter(twitterCode.getObject());
 
                 queryForm.setVisible(true);
-                activationForm.setVisible(false);
             }
 
             @Override
@@ -150,7 +148,7 @@ public class ProfileFinder extends BasePage {
                 item.add(new Label("name", profile[1]));
                 item.add(new Label("profile-image", "<img src=\"" + profile[2] + "\">")
                     .setEscapeModelStrings(false));
-                item.add(new Label("friends", profile[3]));
+                // item.add(new Label("friends", profile[3]));
             }
         };
 
@@ -236,8 +234,8 @@ public class ProfileFinder extends BasePage {
                     result.addOrReplace(new Label("twitter_image", "<img src=\"/fail.png\"/>")
                         .setEscapeModelStrings(false));
                 }
-                // twitterUsers.setList(apiService.executeTwitterQuery(uuid));
-                // linkedInUsers.setList(apiService.executeLinkedInQuery(uuid));
+                twitterUsers.setList(apiService.executeTwitterQuery(uuid));
+                linkedInUsers.setList(apiService.executeLinkedInQuery(uuid));
                 facebookUsers.setList(apiService.executeFacebookQuery(uuid));
 
                 result.addOrReplace(new Label("facebookQuery", apiService.getFacebookQuery(uuid)));
@@ -249,10 +247,8 @@ public class ProfileFinder extends BasePage {
                 result.addOrReplace(XingUser);
                 XingUser.setVisible(true);
 
-                activationForm.setVisible(false);
                 result.setVisible(true);
-                target.add(result);
-                target.add(activationForm);
+                target.add(queryForm);
             }
 
             @Override
@@ -292,7 +288,6 @@ public class ProfileFinder extends BasePage {
 
         if (apiService.alreadySet()) {
             activationForm.setVisible(false);
-            queryForm.setVisible(true);
         }
 
         result.addOrReplace(new Label("facebookQuery", ""));
@@ -301,11 +296,11 @@ public class ProfileFinder extends BasePage {
         result.add(new Label("linkedin_image", "<img src=\"/fail.png\"/>").setEscapeModelStrings(false));
         result.add(new Label("xing_image", "<img src=\"/fail.png\"/>").setEscapeModelStrings(false));
         result.add(new Label("twitter_image", "<img src=\"/fail.png\"/>").setEscapeModelStrings(false));
+        queryForm.add(result);
         body.add(queryForm);
         activationForm.add(linkedInLink);
         activationForm.add(twitterLink);
 
-        body.add(result);
         body.add(activationForm);
         body.add(facebookForm);
     }
