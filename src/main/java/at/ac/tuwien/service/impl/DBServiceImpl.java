@@ -21,7 +21,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.index.IndexService;
+import org.neo4j.graphdb.index.Index;
 
 import at.ac.tuwien.GeneralConstants;
 import at.ac.tuwien.domain.KeyValueEntry;
@@ -39,8 +39,7 @@ public class DBServiceImpl implements DBService {
     @SpringBean(name = "graphDbService")
     public GraphDatabaseService graphDbService;
 
-    @SpringBean(name = "indexService")
-    private IndexService indexService;
+    private Index<Node> profiles = null;
 
     private static final String INDEX = "UUID";
 
@@ -84,7 +83,8 @@ public class DBServiceImpl implements DBService {
     }
 
     private Node fetchNode(String uuid) {
-        Node profile = indexService.getSingleNode(INDEX, uuid);
+        setIndex();
+        Node profile = profiles.get(INDEX, uuid).getSingle();
         if (profile == null) {
             return null;
         }
@@ -125,12 +125,13 @@ public class DBServiceImpl implements DBService {
 
     @Override
     public void addProfile(List<KeyValueEntry> data) {
+        setIndex();
         Transaction tx = graphDbService.beginTx();
         try {
             Node node = graphDbService.createNode();
             Profile profile = new ProfileImpl(node);
             profile.setValue("UUID", UUID.randomUUID().toString());
-            indexService.index(node, INDEX, profile.getValue("UUID"));
+            profiles.add(node, INDEX, profile.getValue(INDEX));
 
             for (KeyValueEntry entry : data) {
                 profile.setValue(entry.getKey(), entry.getValue());
@@ -216,10 +217,6 @@ public class DBServiceImpl implements DBService {
         this.graphDbService = graphDbService;
     }
 
-    public void setIndexService(IndexService indexService) {
-        this.indexService = indexService;
-    }
-
     @Override
     public boolean addRelation(String uuid1, String uuid2) {
         if (uuid1.equals(uuid2)) {
@@ -275,5 +272,11 @@ public class DBServiceImpl implements DBService {
             }
         }
         return false;
+    }
+
+    private void setIndex() {
+        if (profiles == null) {
+            profiles = graphDbService.index().forNodes(INDEX);
+        }
     }
 }
