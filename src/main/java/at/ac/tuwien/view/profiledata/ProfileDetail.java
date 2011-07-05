@@ -56,27 +56,31 @@ public class ProfileDetail extends BasePage {
         }
 
         final String name = "appdata/images/" + uuid.toString() + ".jpg";
+        
+        if (!new File(name).exists()) {
+        	body.add(new Image("profile-image", new Model<String>("dummy.png")));
+        } else {
+            body.add(new Image("profile-image", new DynamicImageResource() {
+                private static final long serialVersionUID = 199083709778570992L;
 
-        body.add(new Image("profile-image", new DynamicImageResource() {
-            private static final long serialVersionUID = 199083709778570992L;
-
-            @Override
-            protected byte[] getImageData(Attributes arg0) {
-                ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-                try {
-                    InputStream inStream = new FileInputStream(new File(name));
-                    copy(inStream, outStream);
-                    inStream.close();
-                    outStream.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                @Override
+                protected byte[] getImageData(Attributes arg0) {
+                    ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+                    try {
+                        InputStream inStream = new FileInputStream(new File(name));
+                        copy(inStream, outStream);
+                        inStream.close();
+                        outStream.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return outStream.toByteArray();
                 }
-                return outStream.toByteArray();
-            }
 
-        }));
+            }));
+        }
 
         body.add(new Label("name", data.get("prename") + " " + data.get("surname")));
         body.add(new Label("emailValue", data.get("email")));
