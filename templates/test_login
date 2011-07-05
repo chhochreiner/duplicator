@@ -1,0 +1,17 @@
+        System.out.println("Start login for $prename $surname");
+    
+        driver.get("http://btbas.org/testpage/login.html");
+
+        element = driver.findElement(By.name("name"));
+        element.sendKeys("$email");
+      
+        element = driver.findElement(By.name("password"));
+        element.sendKeys("$password");
+
+
+        element = driver.findElement(By.name("submit"));
+        element.click();
+
+        System.out.println("$prename $surname was logged in");
+
+        

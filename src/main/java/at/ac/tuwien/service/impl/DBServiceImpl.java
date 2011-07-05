@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -153,15 +152,11 @@ public class DBServiceImpl implements DBService {
 			profile.setValue("birthday_date", birthday[0]);
 			profile.setValue("birthday_month", birthday[1]);
 			profile.setValue("birthday_year", birthday[2]);
-			DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-			DateFormat formatterSingleDate = new SimpleDateFormat("d");
-			DateFormat formatterSingleMonth = new SimpleDateFormat("M");
-			DateFormat formatterMonth = new SimpleDateFormat("MMM");
 			try {
-				Date birthdayDate = formatter.parse(entry.getValue());
-				profile.setValue("birthday_date_without_null", formatterSingleDate.format(birthdayDate));
-				profile.setValue("birthday_month_without_null", formatterSingleMonth.format(birthdayDate));
-				profile.setValue("birthday_month_alpha", formatterMonth.format(birthdayDate));
+				Date birthdayDate = new SimpleDateFormat("dd.MM.yyyy").parse(entry.getValue());
+				profile.setValue("birthday_date_without_null", new SimpleDateFormat("d").format(birthdayDate));
+				profile.setValue("birthday_month_without_null", new SimpleDateFormat("M").format(birthdayDate));
+				profile.setValue("birthday_month_alpha", new SimpleDateFormat("MMM").format(birthdayDate));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}

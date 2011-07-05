@@ -1,0 +1,59 @@
+        System.out.println("Edit details of $prename $surname");
+    
+        driver.get("http://btbas.org/testpage/profile.html");
+
+        element = driver.findElement(By.name("location"));
+        element.sendKeys("$location");
+      
+        element = driver.findElement(By.name("music"));
+        element.sendKeys("$music");
+
+        element = driver.findElement(By.name("language"));
+        element.sendKeys("$language");
+
+        element = driver.findElement(By.id("day"));
+        List<WebElement> options = element.findElements(By.tagName("option"));
+        element.click();
+
+  
+        for (WebElement option : options) {
+            if (option.getValue().equals("$birthday_date_without_null")){
+                option.setSelected();
+                break;
+            }
+        }
+
+        element = driver.findElement(By.id("month"));
+        options = element.findElements(By.tagName("option"));
+        element.click();
+
+  
+        for (WebElement option : options) {
+            if (option.getValue().equals("$birthday_month_without_null")){
+                option.setSelected();
+                break;
+            }
+            
+        }
+
+        element = driver.findElement(By.name("year"));
+        element.sendKeys("$birthday_year");
+
+
+		element = driver.findElement(By.id("avatar"));
+		element.sendKeys(new File("images/$avatar").getAbsolutePath());
+
+
+        System.out.println("please check the data and press enter");
+
+        scanner.nextLine();
+
+
+        element = driver.findElement(By.name("submit"));
+        element.click();
+
+        System.out.println("data for $prename $surname was updated");
+
+
+
+

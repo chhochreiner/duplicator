@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -46,9 +49,25 @@ public class ExternalProfile extends BasePage {
 
 			if (!param.getKey().equals("avatar")) {
 				values.add(new KeyValueEntry(param.getKey(), param.getValue()));
+
+				if (param.getKey().equals("birthday")) {
+					String[] birthday = param.getValue().split("\\.");
+					values.add(new KeyValueEntry("birthday_date", birthday[0]));
+					values.add(new KeyValueEntry("birthday_month", birthday[1]));
+					values.add(new KeyValueEntry("birthday_year", birthday[2]));
+					try {
+						Date birthdayDate = new SimpleDateFormat("dd.MM.yyyy").parse(param.getValue());
+						values.add(new KeyValueEntry("birthday_date_without_null", new SimpleDateFormat("d").format(birthdayDate)));
+						values.add(new KeyValueEntry("birthday_month_without_null", new SimpleDateFormat("M").format(birthdayDate)));
+						values.add(new KeyValueEntry("birthday_month_alpha", new SimpleDateFormat("MMM").format(birthdayDate)));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
 			} else {
 				avatar = param.getValue();
 			}
+
 
 		}
 
