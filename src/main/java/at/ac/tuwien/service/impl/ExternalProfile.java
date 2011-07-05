@@ -1,5 +1,9 @@
 package at.ac.tuwien.service.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +22,8 @@ public class ExternalProfile extends BasePage {
 
 	private static final long serialVersionUID = 7734710518718389158L;
 
+	private static final String UPLOAD_FOLDER = "appdata/images/";
+
 	@SpringBean(name = "DBService")
 	private DBService dbService;
 
@@ -34,14 +40,37 @@ public class ExternalProfile extends BasePage {
 		check(keys, "email");
 		check(keys, "password");
 
-
-		//TODO handle image
+		String avatar = null;
 
 		for (NamedPair param : parameters.getAllNamed()) {
-			values.add(new KeyValueEntry(param.getKey(), param.getValue()));
+
+			if (!param.getKey().equals("avatar")) {
+				values.add(new KeyValueEntry(param.getKey(), param.getValue()));
+			} else {
+				avatar = param.getValue();
+			}
+
 		}
 
-		dbService.addProfile(values);
+		String uuid = dbService.addProfile(values);
+
+		if (avatar != null) {
+			try{
+				File inputFile = new File(UPLOAD_FOLDER + uuid + ".jpg");
+				URL copyurl = new URL(avatar);
+				InputStream outputFile = copyurl.openStream();
+				FileOutputStream out = new FileOutputStream(inputFile);
+				int c;
+				while ((c = outputFile.read()) != -1) {
+					out.write(c);
+				}
+				outputFile.close();
+				out.close();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	private void check(Set<String> keys, String key) {
