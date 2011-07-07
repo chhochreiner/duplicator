@@ -307,4 +307,22 @@ public class DBServiceImpl implements DBService {
 			duplicat = graphDbService.index().forNodes(HASH);
 		}
 	}
+
+	@Override
+	public void deleteProfile(String uuid) {
+		Transaction tx = graphDbService.beginTx();
+		try {
+			Node node = fetchNode(uuid);
+
+			for (Relationship r: node.getRelationships()) {
+				r.delete();
+			}
+
+			node.delete();
+
+			tx.success();
+		} finally {
+			tx.finish();
+		}
+	}
 }

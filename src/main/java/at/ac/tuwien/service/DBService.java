@@ -25,5 +25,7 @@ public interface DBService {
 
 	public List<Profile> getRelatedProfiles(String uuid);
 
-	List<Profile> getDuplicateProfiles(String uuid);
+	public List<Profile> getDuplicateProfiles(String uuid);
+
+	public void deleteProfile(String uuid);
 }

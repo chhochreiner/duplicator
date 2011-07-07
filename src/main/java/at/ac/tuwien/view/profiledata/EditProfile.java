@@ -32,117 +32,134 @@ import at.ac.tuwien.service.DBService;
 
 public class EditProfile extends BasePage {
 
-    private static final long serialVersionUID = 7734710518718389158L;
+	private static final long serialVersionUID = 7734710518718389158L;
 
-    @SpringBean(name = "DBService")
-    private DBService dbService;
+	@SpringBean(name = "DBService")
+	private DBService dbService;
 
-    private Form<Void> profileDataForm;
-    private AdditionalInputForm additionalFields;
+	private Form<Void> profileDataForm;
+	private Form<Void> deleteProfileForm;
+	private AdditionalInputForm additionalFields;
 
-    private Model<String> prenameModel;
-    private Model<String> surnameModel;
-    private Model<String> emailModel;
-    private Model<String> passwordModel;
-    private Model<Date> birthdayModel;
-    private Map<String, String> data;
+	private Model<String> prenameModel;
+	private Model<String> surnameModel;
+	private Model<String> emailModel;
+	private Model<String> passwordModel;
+	private Model<Date> birthdayModel;
+	private Map<String, String> data;
 
-    public EditProfile(PageParameters parameters) {
-        body.add(new AttributeModifier("id", true, new Model<String>("profiledata")));
+	public EditProfile(PageParameters parameters) {
+		body.add(new AttributeModifier("id", true, new Model<String>("profiledata")));
 
-        StringValue uuid = parameters.get("id");
+		StringValue uuid = parameters.get("id");
 
-        data = dbService.fetchProfileData(uuid.toString());
-        final List<KeyValueEntry> additionalvalues = new ArrayList<KeyValueEntry>();
+		data = dbService.fetchProfileData(uuid.toString());
+		final List<KeyValueEntry> additionalvalues = new ArrayList<KeyValueEntry>();
 
-        List<String> alreadyListet = GeneralConstants.getBlacklistedKeys();
-        alreadyListet.addAll(GeneralConstants.getRequiredKeys());
+		List<String> alreadyListet = GeneralConstants.getBlacklistedKeys();
+		alreadyListet.addAll(GeneralConstants.getRequiredKeys());
 
-        if (data == null) {
-            PageParameters parameter = new PageParameters();
+		if (data == null) {
+			PageParameters parameter = new PageParameters();
 
-            parameter.add("error", "Could not find a profile with UUID " + uuid.toString());
-            throw new RestartResponseException(ErrorPage.class, parameter);
-        }
+			parameter.add("error", "Could not find a profile with UUID " + uuid.toString());
+			throw new RestartResponseException(ErrorPage.class, parameter);
+		}
 
-        prenameModel = new Model<String>(data.get("prename"));
-        surnameModel = new Model<String>(data.get("surname"));
-        emailModel = new Model<String>(data.get("email"));
-        passwordModel = new Model<String>(data.get("password"));
+		prenameModel = new Model<String>(data.get("prename"));
+		surnameModel = new Model<String>(data.get("surname"));
+		emailModel = new Model<String>(data.get("email"));
+		passwordModel = new Model<String>(data.get("password"));
 
-        try {
-            DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-            birthdayModel = new Model<Date>(formatter.parse(data.get("birthday")));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+		try {
+			DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+			birthdayModel = new Model<Date>(formatter.parse(data.get("birthday")));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 
-        for (String key : data.keySet()) {
-            if (alreadyListet.contains(key)) {
-                continue;
-            }
-            additionalvalues.add(new KeyValueEntry(key.toString(), data.get(key).toString()));
-        }
+		for (String key : data.keySet()) {
+			if (alreadyListet.contains(key)) {
+				continue;
+			}
+			additionalvalues.add(new KeyValueEntry(key.toString(), data.get(key).toString()));
+		}
 
-        final FormComponent<String> prenameField = new RequiredTextField<String>("prename", prenameModel);
-        final FormComponent<String> surnameField = new RequiredTextField<String>("surname", surnameModel);
-        final FormComponent<String> emailField = new RequiredTextField<String>("email", emailModel);
-        final FormComponent<String> passwordField = new RequiredTextField<String>("password", passwordModel);
-        final DateField birthday = new DateField("birthday", birthdayModel);
-        birthday.setDate(birthdayModel.getObject());
+		final FormComponent<String> prenameField = new RequiredTextField<String>("prename", prenameModel);
+		final FormComponent<String> surnameField = new RequiredTextField<String>("surname", surnameModel);
+		final FormComponent<String> emailField = new RequiredTextField<String>("email", emailModel);
+		final FormComponent<String> passwordField = new RequiredTextField<String>("password", passwordModel);
+		final DateField birthday = new DateField("birthday", birthdayModel);
+		birthday.setDate(birthdayModel.getObject());
 
-        profileDataForm = new FormTemplate("profileDataForm") {
-            private static final long serialVersionUID = -3481033707062528941L;
 
-            @Override
-            public void setupForm() {
+		deleteProfileForm = new FormTemplate("deleteProfileForm") {
 
-                additionalFields = new AdditionalInputForm("additionalForm", additionalvalues);
-                add(additionalFields);
+			@Override
+			public void setupForm() {
 
-                add(prenameField, surnameField, emailField, passwordField, birthday);
-                add(new ComponentFeedbackPanel("prenameErrors", prenameField));
-                add(new ComponentFeedbackPanel("surnameErrors", surnameField));
-                add(new ComponentFeedbackPanel("emailErrors", emailField));
-                add(new ComponentFeedbackPanel("passwordErrors", passwordField));
-                add(new ComponentFeedbackPanel("birthdayErrors", birthday));
-            }
+			}
 
-            @Override
-            public void saveAction() {
+			@Override
+			public void saveAction() {
+				dbService.deleteProfile(data.get("UUID").toString());
+				throw new RestartResponseException(ProfileData.class);
+			}
+		};
 
-                // TODO update Profile
+		profileDataForm = new FormTemplate("profileDataForm") {
+			private static final long serialVersionUID = -3481033707062528941L;
 
-                List<KeyValueEntry> values = additionalFields.getAdditionalValues();
+			@Override
+			public void setupForm() {
 
-                Format formatter = new SimpleDateFormat("dd.MM.yyyy");
-                values.add(new KeyValueEntry("birthday", formatter.format(birthday.getDate())));
+				additionalFields = new AdditionalInputForm("additionalForm", additionalvalues);
+				add(additionalFields);
 
-                values.add(new KeyValueEntry("prename", prenameModel.getObject()));
-                values.add(new KeyValueEntry("surname", surnameModel.getObject()));
-                values.add(new KeyValueEntry("email", emailModel.getObject()));
-                values.add(new KeyValueEntry("password", passwordModel.getObject()));
+				add(prenameField, surnameField, emailField, passwordField, birthday);
+				add(new ComponentFeedbackPanel("prenameErrors", prenameField));
+				add(new ComponentFeedbackPanel("surnameErrors", surnameField));
+				add(new ComponentFeedbackPanel("emailErrors", emailField));
+				add(new ComponentFeedbackPanel("passwordErrors", passwordField));
+				add(new ComponentFeedbackPanel("birthdayErrors", birthday));
+			}
 
-                dbService.editProfile(data.get("UUID").toString(), values);
-            }
+			@Override
+			public void saveAction() {
 
-            @Override
-            public void successMessage() {
-                success.setDefaultModelObject(getLocalizer().getString("success", this));
-            }
+				// TODO update Profile
 
-            @Override
-            public void setupValidator() {
-                birthday.setRequired(true);
-                emailField.add(EmailAddressValidator.getInstance());
-            }
+				List<KeyValueEntry> values = additionalFields.getAdditionalValues();
 
-            @Override
-            public void resetModel() {
-            }
+				Format formatter = new SimpleDateFormat("dd.MM.yyyy");
+				values.add(new KeyValueEntry("birthday", formatter.format(birthday.getDate())));
 
-        };
+				values.add(new KeyValueEntry("prename", prenameModel.getObject()));
+				values.add(new KeyValueEntry("surname", surnameModel.getObject()));
+				values.add(new KeyValueEntry("email", emailModel.getObject()));
+				values.add(new KeyValueEntry("password", passwordModel.getObject()));
 
-        body.add(profileDataForm);
-    }
+				dbService.editProfile(data.get("UUID").toString(), values);
+			}
+
+			@Override
+			public void successMessage() {
+				success.setDefaultModelObject(getLocalizer().getString("success", this));
+			}
+
+			@Override
+			public void setupValidator() {
+				birthday.setRequired(true);
+				emailField.add(EmailAddressValidator.getInstance());
+			}
+
+			@Override
+			public void resetModel() {
+			}
+
+		};
+
+		body.add(deleteProfileForm);
+		body.add(profileDataForm);
+	}
 }
