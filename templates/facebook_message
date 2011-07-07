@@ -1,0 +1,19 @@
+        System.out.println("Send a Message on on Facebook.com");
+    
+        driver.get("https://www.facebook.com/editprofile.php?sk=basic");
+
+        element = driver.findElement(By.xpath("//input[@value='Enter a friend's name or email address']"));
+        element.sendKeys("$prename $surname");
+        
+        element = driver.findElement(By.name("message_body"));
+        element.sendKeys("This message is automatically sent");
+
+        System.out.println("please check the data and submit the data");
+
+        scanner.nextLine();
+
+        element = driver.findElement(By.name("send"));
+        element.click();
+
+	    System.out.println("The message was sent.");
+	

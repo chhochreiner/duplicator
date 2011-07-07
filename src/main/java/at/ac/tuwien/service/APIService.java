@@ -4,29 +4,31 @@ import java.util.List;
 
 public interface APIService {
 
-    public String getLinkedInRequestURL();
+	public String getLinkedInRequestURL();
 
-    public void verifyLinkedIn(String code);
+	public void verifyLinkedIn(String code);
 
-    public List<String[]> executeLinkedInQuery(String uuid);
+	public List<String[]> executeLinkedInQuery(String uuid);
 
-    public String getTwitterRequestURL();
+	public String getTwitterRequestURL();
 
-    public void verifyTwitter(String code);
+	public void verifyTwitter(String code);
 
-    public List<String[]> executeTwitterQuery(String uuid);
+	public List<String[]> executeTwitterQuery(String uuid);
 
-    public List<String[]> executeFacebookQuery(String uuid);
+	public List<String[]> executeFacebookQuery(String uuid);
 
-    public String getFacebookQuery(String uuid);
+	public String getFacebookQuery(String uuid);
 
-    public String getLinkedinQuery(String uuid);
+	public String getLinkedinQuery(String uuid);
 
-    public boolean alreadySet();
+	public boolean alreadySet();
 
-    public String excecuteXingQuery(String uuid);
+	public String excecuteXingQuery(String uuid);
 
-    public void setFacebookToken(String token);
+	public String excecuteGooglePlusQuery(String uuid);
 
-    public boolean checkNetworkId(String network, String uuid);
+	public void setFacebookToken(String token);
+
+	public boolean checkNetworkId(String network, String uuid);
 }

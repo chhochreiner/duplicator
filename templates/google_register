@@ -1,0 +1,45 @@
+        System.out.println("Start registration of $prename $surname on Google(Gmail)");
+    
+        driver.get("https://www.google.com/accounts/NewAccount?service=mail");
+
+        WebElement element = driver.findElement(By.name("FirstName"));
+        element.sendKeys("$prename");
+      
+        element = driver.findElement(By.name("LastName"));
+        element.sendKeys("$surname");
+        
+        element = driver.findElement(By.name("LastName"));
+        element.sendKeys("$surname");
+        
+        element = driver.findElement(By.name("Email"));
+        element.sendKeys("$prename.$surnamesalt1029384756");
+
+        element = driver.findElement(By.name("Passwd"));
+        element.sendKeys("$password");
+
+        element = driver.findElement(By.name("PasswdAgain"));
+        element.sendKeys("$password");
+
+        element = driver.findElement(By.name("selection"));
+        element.sendKeys("Wie lautet der Name Ihres besten Freundes aus der Kindheit?");
+
+        element = driver.findElement(By.name("IdentityAnswer"));
+        element.sendKeys("this is the reply");
+
+        element = driver.findElement(By.name("SecondaryEmail"));
+        element.sendKeys("aaa@bbb.com");
+
+        element = driver.findElement(By.name("PasswdAgain"));
+        element.sendKeys("$password");
+
+        element = driver.findElement(By.name("PasswdAgain"));
+        element.sendKeys("$password");
+
+        System.out.println("please solve the captcha and press enter");
+
+        scanner.nextLine();
+  
+        element = driver.findElement(By.name("submitbutton"));
+        element.click();
+
+        System.out.println("$prename $surname was registered on Google.com");

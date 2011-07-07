@@ -28,6 +28,7 @@ import at.ac.tuwien.BasePage;
 import at.ac.tuwien.ErrorPage;
 import at.ac.tuwien.GeneralConstants;
 import at.ac.tuwien.domain.KeyValueEntry;
+import at.ac.tuwien.domain.Profile;
 import at.ac.tuwien.service.DBService;
 
 public class ProfileDetail extends BasePage {
@@ -43,8 +44,6 @@ public class ProfileDetail extends BasePage {
 		StringValue uuid = parameters.get("id");
 
 		Map<String, String> data = dbService.fetchProfileData(uuid.toString());
-
-
 
 		List<KeyValueEntry> additionalvalues = new ArrayList<KeyValueEntry>();
 
@@ -110,6 +109,51 @@ public class ProfileDetail extends BasePage {
 		PageParameters parameter = new PageParameters();
 
 		parameter.add("id", data.get("UUID").toString());
+
+		final List<KeyValueEntry> relatedFriends = new ArrayList<KeyValueEntry>();
+
+		for (Profile profile : dbService.getRelatedProfiles(data.get("UUID"))) {
+			relatedFriends.add(new KeyValueEntry(profile.getValue("UUID"), (profile.getPrename() + " " + profile
+					.getSurname())));
+		}
+
+		final ListView<KeyValueEntry> friends = new ListView<KeyValueEntry>("friends", relatedFriends) {
+			private static final long serialVersionUID = 7734710518717389159L;
+
+			@Override
+			protected void populateItem(ListItem<KeyValueEntry> item) {
+				final KeyValueEntry entry = item.getModelObject();
+
+				PageParameters parameters = new PageParameters();
+				parameters.add("id", entry.getKey());
+				item.add(new BookmarkablePageLink<String>("action", ProfileDetail.class, parameters).add(new Label("name", entry.getValue())));
+
+			}
+		};
+
+
+		final List<KeyValueEntry> relatedDuplicats = new ArrayList<KeyValueEntry>();
+
+		for (Profile profile : dbService.getDuplicateProfiles(data.get("UUID"))) {
+			relatedDuplicats.add(new KeyValueEntry(profile.getValue("UUID"), (profile.getPrename() + " " + profile
+					.getSurname())));
+		}
+
+		final ListView<KeyValueEntry> duplicats = new ListView<KeyValueEntry>("duplicats", relatedDuplicats) {
+			private static final long serialVersionUID = 7734710518717389159L;
+
+			@Override
+			protected void populateItem(ListItem<KeyValueEntry> item) {
+				final KeyValueEntry entry = item.getModelObject();
+				PageParameters parameters = new PageParameters();
+				parameters.add("id", entry.getKey());
+				item.add(new BookmarkablePageLink<String>("action", ProfileDetail.class, parameters).add(new Label("name", entry.getValue())));
+			}
+		};
+
+
+		body.add(friends);
+		body.add(duplicats);
 
 		body.add(new BookmarkablePageLink<String>("edit", EditProfile.class, parameter));
 		body.add(new BookmarkablePageLink<String>("editFriends", EditFriends.class, parameter));

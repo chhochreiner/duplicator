@@ -32,15 +32,17 @@ import au.com.bytecode.opencsv.CSVReader;
 public class DBServiceImpl implements DBService {
 
 	enum MyRelationshipTypes implements RelationshipType {
-		KNOWS
+		KNOWS, DUPLICAT
 	}
 
 	@SpringBean(name = "graphDbService")
 	public GraphDatabaseService graphDbService;
 
 	private Index<Node> profiles = null;
+	private Index<Node> duplicat = null;
 
 	private static final String INDEX = "UUID";
+	private static final String HASH = "hash";
 
 	@Override
 	public List<Profile> getProfiles() {
@@ -137,6 +139,18 @@ public class DBServiceImpl implements DBService {
 				profile.setValue(entry.getKey(), entry.getValue());
 				splitBirthday(profile, entry);
 			}
+
+
+			String hash = profile.getPrename().trim()+profile.getSurname().trim()+profile.getEmail().trim();
+
+			Node dupl = duplicat.get(HASH, hash).getSingle();
+
+			if (dupl!=null) {
+				node.createRelationshipTo(dupl, MyRelationshipTypes.DUPLICAT);
+			}
+
+			duplicat.add(node, HASH, hash);
+
 
 			tx.success();
 
@@ -251,6 +265,19 @@ public class DBServiceImpl implements DBService {
 		return profiles;
 	}
 
+
+	@Override
+	public List<Profile> getDuplicateProfiles(String uuid) {
+		Node node = fetchNode(uuid);
+		List<Profile> profiles = new ArrayList<Profile>();
+
+		for (Relationship rel : node.getRelationships(MyRelationshipTypes.DUPLICAT, Direction.BOTH)) {
+			profiles.add(new ProfileImpl(rel.getOtherNode(node)));
+		}
+
+		return profiles;
+	}
+
 	@Override
 	public boolean removeRelation(String uuid1, String uuid2) {
 
@@ -274,6 +301,10 @@ public class DBServiceImpl implements DBService {
 	private void setIndex() {
 		if (profiles == null) {
 			profiles = graphDbService.index().forNodes(INDEX);
+		}
+
+		if (duplicat == null) {
+			duplicat = graphDbService.index().forNodes(HASH);
 		}
 	}
 }

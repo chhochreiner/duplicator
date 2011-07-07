@@ -24,4 +24,6 @@ public interface DBService {
 	public boolean removeRelation(String uuid1, String uuid2);
 
 	public List<Profile> getRelatedProfiles(String uuid);
+
+	List<Profile> getDuplicateProfiles(String uuid);
 }

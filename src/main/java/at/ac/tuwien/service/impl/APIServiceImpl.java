@@ -32,268 +32,275 @@ import com.restfb.FacebookClient;
 
 public class APIServiceImpl implements APIService {
 
-    @SpringBean(name = "DBService")
-    public DBService dbService;
+	@SpringBean(name = "DBService")
+	public DBService dbService;
 
-    @SpringBean(name = "xmlService")
-    public XMLServiceImpl xmlService;
+	@SpringBean(name = "xmlService")
+	public XMLServiceImpl xmlService;
 
-    private OAuthService linkedInService;
-    private Token linkedInRequestToken;
-    private Token linkedInAccessToken = null;
+	private OAuthService linkedInService;
+	private Token linkedInRequestToken;
+	private Token linkedInAccessToken = null;
 
-    private OAuthService twitterService;
-    private Token twitterRequestToken;
-    private Token twitterAccessToken = null;
+	private OAuthService twitterService;
+	private Token twitterRequestToken;
+	private Token twitterAccessToken = null;
 
-    private String facebookToken;
+	private String facebookToken;
 
-    public APIServiceImpl() {
-        linkedInService = new ServiceBuilder()
-            .provider(LinkedInApi.class)
-            .apiKey("KbvaulneD9ML6w4hDfI16cx58LJx3vEudgiC_NWtLSkq6WpkhpINeZVrrKwVZKDE")
-            .apiSecret("kFJXV98FOMibMfHSFk4vc_3wSA4YzXVVYLu9afXXfhsoqRe7FtUkmTqcYlY5c5hA")
-            .build();
+	public APIServiceImpl() {
+		linkedInService = new ServiceBuilder()
+		.provider(LinkedInApi.class)
+		.apiKey("KbvaulneD9ML6w4hDfI16cx58LJx3vEudgiC_NWtLSkq6WpkhpINeZVrrKwVZKDE")
+		.apiSecret("kFJXV98FOMibMfHSFk4vc_3wSA4YzXVVYLu9afXXfhsoqRe7FtUkmTqcYlY5c5hA")
+		.build();
 
-        twitterService = new ServiceBuilder()
-            .provider(TwitterApi.class)
-            .apiKey("oDbrOUXFZz7Nc1MsHPtsbg")
-            .apiSecret("ABWpSXT52gnVz9vagTvJhHvwJO1H2Ox6GzTRBZr0")
-            .build();
+		twitterService = new ServiceBuilder()
+		.provider(TwitterApi.class)
+		.apiKey("oDbrOUXFZz7Nc1MsHPtsbg")
+		.apiSecret("ABWpSXT52gnVz9vagTvJhHvwJO1H2Ox6GzTRBZr0")
+		.build();
 
-        restoreToken("twitter");
-        restoreToken("linkedin");
+		restoreToken("twitter");
+		restoreToken("linkedin");
 
-        twitterRequestToken = twitterService.getRequestToken();
-        linkedInRequestToken = linkedInService.getRequestToken();
+		twitterRequestToken = twitterService.getRequestToken();
+		linkedInRequestToken = linkedInService.getRequestToken();
 
-    }
+	}
 
-    @Override
-    public String getLinkedInRequestURL() {
-        return linkedInService.getAuthorizationUrl(linkedInRequestToken);
-    }
+	@Override
+	public String getLinkedInRequestURL() {
+		return linkedInService.getAuthorizationUrl(linkedInRequestToken);
+	}
 
-    @Override
-    public void verifyLinkedIn(String code) {
-        Verifier verifier = new Verifier(code);
-        linkedInAccessToken = linkedInService.getAccessToken(linkedInRequestToken, verifier);
-        storeToken("linkedin", linkedInAccessToken, verifier);
-    }
+	@Override
+	public void verifyLinkedIn(String code) {
+		Verifier verifier = new Verifier(code);
+		linkedInAccessToken = linkedInService.getAccessToken(linkedInRequestToken, verifier);
+		storeToken("linkedin", linkedInAccessToken, verifier);
+	}
 
-    public void setXmlService(XMLServiceImpl xmlService) {
-        this.xmlService = xmlService;
-    }
+	public void setXmlService(XMLServiceImpl xmlService) {
+		this.xmlService = xmlService;
+	}
 
-    @Override
-    public List<String[]> executeLinkedInQuery(String uuid) {
+	@Override
+	public List<String[]> executeLinkedInQuery(String uuid) {
 
-        OAuthRequest request = new OAuthRequest(Verb.GET, getLinkedinQuery(uuid));
-        linkedInService.signRequest(linkedInAccessToken, request);
-        Response response = request.send();
+		OAuthRequest request = new OAuthRequest(Verb.GET, getLinkedinQuery(uuid));
+		linkedInService.signRequest(linkedInAccessToken, request);
+		Response response = request.send();
 
-        return xmlService.parseLinkedInXML(response.getBody());
-    }
+		return xmlService.parseLinkedInXML(response.getBody());
+	}
 
-    public void setDbService(DBService dbService) {
-        this.dbService = dbService;
-    }
+	public void setDbService(DBService dbService) {
+		this.dbService = dbService;
+	}
 
-    @Override
-    public boolean alreadySet() {
-        if ((linkedInAccessToken == null) || (twitterAccessToken == null)) {
-            return false;
-        }
-        return true;
-    }
+	@Override
+	public boolean alreadySet() {
+		if ((linkedInAccessToken == null) || (twitterAccessToken == null)) {
+			return false;
+		}
+		return true;
+	}
 
-    @Override
-    public String excecuteXingQuery(String uuid) {
-        Map<String, String> data = dbService.fetchProfileData(uuid);
+	@Override
+	public String excecuteXingQuery(String uuid) {
+		Map<String, String> data = dbService.fetchProfileData(uuid);
 
-        return "https://www.xing.com/search/people?search%5Bq%5D=" + data.get("prename") + "+" + data.get("surname")
-                + "&send=1";
-    }
+		return "https://www.xing.com/search/people?search%5Bq%5D=" + data.get("prename") + "+" + data.get("surname")
+				+ "&send=1";
+	}
 
-    @Override
-    public List<String[]> executeFacebookQuery(String uuid) {
-        List<String[]> result = new ArrayList<String[]>();
-        List<Profile> listedfriends = dbService.getRelatedProfiles(uuid);
+	@Override
+	public String excecuteGooglePlusQuery(String uuid) {
+		Map<String, String> data = dbService.fetchProfileData(uuid);
 
-        FacebookClient facebookClient = new DefaultFacebookClient(facebookToken);
+		return "http://www.google.com/search?hl=en&tbs=prfl:e&q=" + data.get("prename") + "+" + data.get("surname");
+	}
 
-        List<FqlUser> users = facebookClient.executeQuery(getFacebookQuery(uuid), FqlUser.class);
+	@Override
+	public List<String[]> executeFacebookQuery(String uuid) {
+		List<String[]> result = new ArrayList<String[]>();
+		List<Profile> listedfriends = dbService.getRelatedProfiles(uuid);
 
-        for (FqlUser user : users) {
-            Integer friendCounter = 0;
-            String[] buffer = new String[4];
-            buffer[0] = user.uid;
-            buffer[1] = user.name;
-            buffer[2] = user.pic_small;
-            buffer[3] = friendCounter.toString();
+		FacebookClient facebookClient = new DefaultFacebookClient(facebookToken);
 
-            try {
-                List<FqlUser> friends =
-                    facebookClient
-                        .executeQuery(
-                            "SELECT name,uid FROM user WHERE uid IN ( SELECT target_id FROM connection WHERE source_id="
-                                    + user.uid + " )",
-                            FqlUser.class);
+		List<FqlUser> users = facebookClient.executeQuery(getFacebookQuery(uuid), FqlUser.class);
 
-                for (Profile listed : listedfriends) {
-                    String listedString = listed.getPrename() + listed.getSurname();
-                    listedString = listedString.replaceAll("\\s", "");
-                    for (FqlUser friend : friends) {
-                        if ((friend.name.replaceAll("\\s", "")).equals(listedString)) {
-                            friendCounter++;
-                        }
-                    }
-                }
-                buffer[3] = friendCounter.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
-                buffer[3] = "-";
-            }
+		for (FqlUser user : users) {
+			Integer friendCounter = 0;
+			String[] buffer = new String[4];
+			buffer[0] = user.uid;
+			buffer[1] = user.name;
+			buffer[2] = user.pic_small;
+			buffer[3] = friendCounter.toString();
 
-            result.add(buffer);
-        }
+			try {
+				List<FqlUser> friends =
+						facebookClient
+						.executeQuery(
+								"SELECT name,uid FROM user WHERE uid IN ( SELECT target_id FROM connection WHERE source_id="
+										+ user.uid + " )",
+										FqlUser.class);
 
-        return result;
-    }
+				for (Profile listed : listedfriends) {
+					String listedString = listed.getPrename() + listed.getSurname();
+					listedString = listedString.replaceAll("\\s", "");
+					for (FqlUser friend : friends) {
+						if ((friend.name.replaceAll("\\s", "")).equals(listedString)) {
+							friendCounter++;
+						}
+					}
+				}
+				buffer[3] = friendCounter.toString();
+			} catch (Exception e) {
+				e.printStackTrace();
+				buffer[3] = "-";
+			}
 
-    @Override
-    public String getTwitterRequestURL() {
-        return twitterService.getAuthorizationUrl(twitterRequestToken);
-    }
+			result.add(buffer);
+		}
 
-    @Override
-    public void verifyTwitter(String code) {
-        Verifier verifier = new Verifier(code);
-        twitterAccessToken = twitterService.getAccessToken(twitterRequestToken, verifier);
-        storeToken("twitter", linkedInAccessToken, verifier);
-    }
+		return result;
+	}
 
-    @Override
-    public List<String[]> executeTwitterQuery(String uuid) {
-        Map<String, String> data = dbService.fetchProfileData(uuid);
+	@Override
+	public String getTwitterRequestURL() {
+		return twitterService.getAuthorizationUrl(twitterRequestToken);
+	}
 
-        String resource =
-            "http://api.twitter.com/1/users/search.xml?q=" + data.get("prename") + "." + data.get("surname")
-                    + "&per_page=10";
-        OAuthRequest request = new OAuthRequest(Verb.GET, resource);
-        twitterService.signRequest(twitterAccessToken, request);
-        Response response = request.send();
+	@Override
+	public void verifyTwitter(String code) {
+		Verifier verifier = new Verifier(code);
+		twitterAccessToken = twitterService.getAccessToken(twitterRequestToken, verifier);
+		storeToken("twitter", linkedInAccessToken, verifier);
+	}
 
-        return xmlService.parseTwitterXML(response.getBody());
-    }
+	@Override
+	public List<String[]> executeTwitterQuery(String uuid) {
+		Map<String, String> data = dbService.fetchProfileData(uuid);
 
-    private void storeToken(String name, Token token, Verifier verifier) {
+		String resource =
+				"http://api.twitter.com/1/users/search.xml?q=" + data.get("prename") + "." + data.get("surname")
+				+ "&per_page=10";
+		OAuthRequest request = new OAuthRequest(Verb.GET, resource);
+		twitterService.signRequest(twitterAccessToken, request);
+		Response response = request.send();
 
-        if (!(new File("appdata/token")).exists()) {
-            new File("appdata/token").mkdirs();
-        }
+		return xmlService.parseTwitterXML(response.getBody());
+	}
 
-        try {
-            FileOutputStream tokenFile = new FileOutputStream("appdata/token/" + name);
-            ObjectOutputStream tokenStream = new ObjectOutputStream(tokenFile);
-            tokenStream.writeObject(token);
-            tokenStream.flush();
+	private void storeToken(String name, Token token, Verifier verifier) {
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+		if (!(new File("appdata/token")).exists()) {
+			new File("appdata/token").mkdirs();
+		}
 
-    private boolean restoreToken(String name) {
+		try {
+			FileOutputStream tokenFile = new FileOutputStream("appdata/token/" + name);
+			ObjectOutputStream tokenStream = new ObjectOutputStream(tokenFile);
+			tokenStream.writeObject(token);
+			tokenStream.flush();
 
-        if (!(new File("appdata/token/" + name)).exists()) {
-            return false;
-        }
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-        try {
-            FileInputStream tokenFile = new FileInputStream("appdata/token/" + name);
-            ObjectInputStream tokenStream = new ObjectInputStream(tokenFile);
+	private boolean restoreToken(String name) {
 
-            if (name.equals("twitter")) {
-                twitterAccessToken = (Token) tokenStream.readObject();
-            }
+		if (!(new File("appdata/token/" + name)).exists()) {
+			return false;
+		}
 
-            if (name.equals("linkedin")) {
-                linkedInAccessToken = (Token) tokenStream.readObject();
-            }
+		try {
+			FileInputStream tokenFile = new FileInputStream("appdata/token/" + name);
+			ObjectInputStream tokenStream = new ObjectInputStream(tokenFile);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
+			if (name.equals("twitter")) {
+				twitterAccessToken = (Token) tokenStream.readObject();
+			}
 
-    public static class FqlUser {
-        @Facebook
-        String uid;
+			if (name.equals("linkedin")) {
+				linkedInAccessToken = (Token) tokenStream.readObject();
+			}
 
-        @Facebook
-        String name;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 
-        @Facebook
-        String pic_small;
+	public static class FqlUser {
+		@Facebook
+		String uid;
 
-        @Override
-        public String toString() {
-            return String.format("%s (%s)", name, uid);
-        }
-    }
+		@Facebook
+		String name;
 
-    @Override
-    public String getFacebookQuery(String uuid) {
-        Map<String, String> data = dbService.fetchProfileData(uuid);
-        String facebookQuery =
-            "SELECT uid, name, pic_small FROM user WHERE name=\"" + data.get("prename")
-                    + " " +
-                    data.get("surname") + "\" ";
+		@Facebook
+		String pic_small;
 
-        facebookQuery += "LIMIT 1,10";
+		@Override
+		public String toString() {
+			return String.format("%s (%s)", name, uid);
+		}
+	}
 
-        return facebookQuery;
-    }
+	@Override
+	public String getFacebookQuery(String uuid) {
+		Map<String, String> data = dbService.fetchProfileData(uuid);
+		String facebookQuery =
+				"SELECT uid, name, pic_small FROM user WHERE name=\"" + data.get("prename")
+				+ " " +
+				data.get("surname") + "\" ";
 
-    @Override
-    public String getLinkedinQuery(String uuid) {
-        Map<String, String> data = dbService.fetchProfileData(uuid);
+		facebookQuery += "LIMIT 1,10";
 
-        String linkedInQuery =
-            "http://api.linkedin.com/v1/people-search";
-        linkedInQuery += ":(people:(id,first-name,last-name,picture-url))";
-        linkedInQuery += "?first-name=" + data.get("prename") + "&last-name="
-                + data.get("surname") + "&count=10";
+		return facebookQuery;
+	}
 
-        if (data.containsKey("country-code")) {
-            linkedInQuery += "&country-code=" + data.get("country-code");
-        }
+	@Override
+	public String getLinkedinQuery(String uuid) {
+		Map<String, String> data = dbService.fetchProfileData(uuid);
 
-        if (data.containsKey("company-name")) {
-            linkedInQuery += "&company-name=" + data.get("company-name");
-        }
+		String linkedInQuery =
+				"http://api.linkedin.com/v1/people-search";
+		linkedInQuery += ":(people:(id,first-name,last-name,picture-url))";
+		linkedInQuery += "?first-name=" + data.get("prename") + "&last-name="
+				+ data.get("surname") + "&count=10";
 
-        if (data.containsKey("school-name")) {
-            linkedInQuery += "&school-name=" + data.get("school-name");
-        }
+		if (data.containsKey("country-code")) {
+			linkedInQuery += "&country-code=" + data.get("country-code");
+		}
 
-        return linkedInQuery;
-    }
+		if (data.containsKey("company-name")) {
+			linkedInQuery += "&company-name=" + data.get("company-name");
+		}
 
-    @Override
-    public void setFacebookToken(String token) {
-        this.facebookToken = token;
-    }
+		if (data.containsKey("school-name")) {
+			linkedInQuery += "&school-name=" + data.get("school-name");
+		}
 
-    @Override
-    public boolean checkNetworkId(String network, String uuid) {
-        Map<String, String> data = dbService.fetchProfileData(uuid);
-        return data.containsKey(network);
-    }
+		return linkedInQuery;
+	}
+
+	@Override
+	public void setFacebookToken(String token) {
+		this.facebookToken = token;
+	}
+
+	@Override
+	public boolean checkNetworkId(String network, String uuid) {
+		Map<String, String> data = dbService.fetchProfileData(uuid);
+		return data.containsKey(network);
+	}
 
 }
