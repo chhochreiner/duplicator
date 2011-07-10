@@ -56,6 +56,7 @@ public class ProfileFinder extends BasePage {
 	private Component GooglePlusUser;
 	private ExternalLink linkedInLink;
 	private ExternalLink twitterLink;
+	private ExternalLink twitterLink2;
 
 	public ProfileFinder() {
 		body.add(new AttributeModifier("id", true, new Model<String>("profileFinder")));
@@ -244,7 +245,7 @@ public class ProfileFinder extends BasePage {
 				}
 				twitterUsers.setList(apiService.executeTwitterQuery(uuid));
 				linkedInUsers.setList(apiService.executeLinkedInQuery(uuid));
-				// facebookUsers.setList(apiService.executeFacebookQuery(uuid));
+				facebookUsers.setList(apiService.executeFacebookQuery(uuid));
 
 				result.addOrReplace(new Label("facebookQuery", apiService.getFacebookQuery(uuid)));
 				result.addOrReplace(new Label("linkedinQuery", apiService.getLinkedinQuery(uuid)));
@@ -261,7 +262,6 @@ public class ProfileFinder extends BasePage {
 				GooglePlusUser.setOutputMarkupId(true);
 				result.addOrReplace(GooglePlusUser);
 				GooglePlusUser.setVisible(true);
-
 
 				result.setVisible(true);
 				target.add(queryForm);
@@ -296,6 +296,8 @@ public class ProfileFinder extends BasePage {
 		GooglePlusUser = new WebMarkupContainer("GooglePlusUser").add(new SimpleAttributeModifier("src",
 				""));
 		GooglePlusUser.setVisible(false);
+
+
 
 
 		linkedInUsers.setOutputMarkupId(true);

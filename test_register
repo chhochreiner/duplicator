@@ -1,0 +1,29 @@
+        System.out.println("Start registration of $prename $surname");
+    
+        driver.get("http://btbas.org/testpage/register.html");
+
+        WebElement element = driver.findElement(By.name("firstname"));
+        element.sendKeys("$prename");
+      
+        element = driver.findElement(By.name("lastname"));
+        element.sendKeys("$surname");
+        
+        element = driver.findElement(By.name("email"));
+        element.sendKeys("$email");
+
+        element = driver.findElement(By.name("password"));
+        element.sendKeys("$password");
+        
+        element = driver.findElement(By.name("password_repeat"));
+        element.sendKeys("$password");
+
+        System.out.println("please solve the captcha and press enter");
+
+        scanner.nextLine();
+
+        element = driver.findElement(By.name("submit"));
+        element.click();
+
+        System.out.println("$prename $surname was registered");
+        
+

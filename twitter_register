@@ -1,0 +1,27 @@
+        System.out.println("Start registration of $prename $surname on Twitter");
+    
+        driver.get("http://www.twitter.com/");
+
+        WebElement element = driver.findElement(By.name("user[name]"));
+        element.sendKeys("$prename $surname");
+      
+        element = driver.findElement(By.name("user[email]"));
+        element.sendKeys("$email");
+        
+        element = driver.findElement(By.name("user[user_password]"));
+        element.sendKeys("$password");
+        
+        System.out.println("please check the data and submit the data");
+
+        scanner.nextLine();
+
+        element = driver.findElement(By.xpath("//input[@value='Sign up']"));
+        element.click();
+
+        System.out.println("please check the data and submit the data");
+        scanner.nextLine();
+
+        element = driver.findElement(By.xpath("//input[@value='Create my account']"));
+        element.click();
+
+        System.out.println("$prename $surname was registered on Twitter.com");

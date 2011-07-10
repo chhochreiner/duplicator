@@ -41,7 +41,7 @@
 
 
 		element = driver.findElement(By.id("avatar"));
-		element.sendKeys(new File("images/$avatar").getAbsolutePath());
+		element.sendKeys(new File("images/avatar.jpg").getAbsolutePath());
 
 
         System.out.println("please check the data and press enter");

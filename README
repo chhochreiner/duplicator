@@ -1,0 +1,37 @@
+SETUP
+
+- Adjust API token in src/main/ressources/config.properties
+- Compile the application with mvn clean install
+- start the application with mvn jetty:run
+
+
+USAGE
+
+# Import profiles manually
+- open http://localhost:8080/wicket/bookmarkable/at.ac.tuwien.view.profiledata.AddProfile
+- insert all desired data
+- click on the submit button
+
+# Import profiles via csv
+- open http://localhost:8080/wicket/bookmarkable/at.ac.tuwien.view.profiledata.BatchImport
+- select the file and upload it with a click on the upload button
+
+# Import profiles via API
+- there is an API call that is described on the front page
+- there is also an example in src/test/java/at/ac/tuwien/ExternalImporter.java taht uses this API
+
+# Import templates
+- open http://localhost:8080/wicket/bookmarkable/at.ac.tuwien.view.templateduplication.ImportTemplates
+- Upload the desired templates; some sample templates can be found in the templates folder; the according sample pages can be found in the folder testpage
+
+# Generate templates
+- open http://localhost:8080/wicket/bookmarkable/at.ac.tuwien.view.templateduplication.TemplateGenerator
+- select one user
+- select at least one template (the order of the selected templates matters)
+- generate the templates with a click on the submit button
+
+# Execute templates
+- copy the downloaded file (Generator.java) into the tests of the selenium runner and execute the run.sh
+
+
+

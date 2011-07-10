@@ -31,4 +31,6 @@ public interface APIService {
 	public void setFacebookToken(String token);
 
 	public boolean checkNetworkId(String network, String uuid);
+
+	String excecuteTwitterWebsiteQuery(String uuid);
 }

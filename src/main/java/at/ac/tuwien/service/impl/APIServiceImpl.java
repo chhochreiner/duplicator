@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.scribe.builder.ServiceBuilder;
@@ -22,7 +23,6 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
-import at.ac.tuwien.domain.Profile;
 import at.ac.tuwien.service.APIService;
 import at.ac.tuwien.service.DBService;
 
@@ -49,16 +49,19 @@ public class APIServiceImpl implements APIService {
 	private String facebookToken;
 
 	public APIServiceImpl() {
+
+		final ResourceBundle properties = ResourceBundle.getBundle("config");
+
 		linkedInService = new ServiceBuilder()
 		.provider(LinkedInApi.class)
-		.apiKey("KbvaulneD9ML6w4hDfI16cx58LJx3vEudgiC_NWtLSkq6WpkhpINeZVrrKwVZKDE")
-		.apiSecret("kFJXV98FOMibMfHSFk4vc_3wSA4YzXVVYLu9afXXfhsoqRe7FtUkmTqcYlY5c5hA")
+		.apiKey(properties.getString("linkedInAPIKey"))
+		.apiSecret(properties.getString("linkedInAPISecret"))
 		.build();
 
 		twitterService = new ServiceBuilder()
 		.provider(TwitterApi.class)
-		.apiKey("oDbrOUXFZz7Nc1MsHPtsbg")
-		.apiSecret("ABWpSXT52gnVz9vagTvJhHvwJO1H2Ox6GzTRBZr0")
+		.apiKey(properties.getString("twitterAPIKey"))
+		.apiSecret(properties.getString("twitterAPISecret"))
 		.build();
 
 		restoreToken("twitter");
@@ -116,6 +119,15 @@ public class APIServiceImpl implements APIService {
 	}
 
 	@Override
+	public String excecuteTwitterWebsiteQuery(String uuid) {
+		Map<String, String> data = dbService.fetchProfileData(uuid);
+
+		return "http://twitter.com/#!/who_to_follow/search/" + data.get("prename") + "%20" + data.get("surname");
+	}
+
+
+
+	@Override
 	public String excecuteGooglePlusQuery(String uuid) {
 		Map<String, String> data = dbService.fetchProfileData(uuid);
 
@@ -125,7 +137,7 @@ public class APIServiceImpl implements APIService {
 	@Override
 	public List<String[]> executeFacebookQuery(String uuid) {
 		List<String[]> result = new ArrayList<String[]>();
-		List<Profile> listedfriends = dbService.getRelatedProfiles(uuid);
+		//	List<Profile> listedfriends = dbService.getRelatedProfiles(uuid);
 
 		FacebookClient facebookClient = new DefaultFacebookClient(facebookToken);
 
@@ -140,23 +152,24 @@ public class APIServiceImpl implements APIService {
 			buffer[3] = friendCounter.toString();
 
 			try {
-				List<FqlUser> friends =
-						facebookClient
-						.executeQuery(
-								"SELECT name,uid FROM user WHERE uid IN ( SELECT target_id FROM connection WHERE source_id="
-										+ user.uid + " )",
-										FqlUser.class);
+				//				List<FqlUser> friends =
+				//						facebookClient
+				//						.executeQuery(
+				//								"SELECT name,uid FROM user WHERE uid IN ( SELECT target_id FROM connection WHERE source_id="
+				//										+ user.uid + " )",
+				//										FqlUser.class);
 
-				for (Profile listed : listedfriends) {
-					String listedString = listed.getPrename() + listed.getSurname();
-					listedString = listedString.replaceAll("\\s", "");
-					for (FqlUser friend : friends) {
-						if ((friend.name.replaceAll("\\s", "")).equals(listedString)) {
-							friendCounter++;
-						}
-					}
-				}
-				buffer[3] = friendCounter.toString();
+				//				for (Profile listed : listedfriends) {
+				//					String listedString = listed.getPrename() + listed.getSurname();
+				//					listedString = listedString.replaceAll("\\s", "");
+				//					for (FqlUser friend : friends) {
+				//						if ((friend.name.replaceAll("\\s", "")).equals(listedString)) {
+				//							friendCounter++;
+				//						}
+				//					}
+				//				}
+				//buffer[3] = friendCounter.toString();
+				buffer[3] = "-";
 			} catch (Exception e) {
 				e.printStackTrace();
 				buffer[3] = "-";

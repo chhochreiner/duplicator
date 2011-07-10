@@ -125,12 +125,13 @@ public class TemplateServiceImpl implements TemplateService {
 						"import org.openqa.selenium.firefox.FirefoxDriver;" + "\n" +
 						"import java.util.Scanner;" + "\n" +
 						"import java.util.List;" + "\n" +
-						"java.net.URISyntaxException;" + "\n" +
+						"import java.net.URISyntaxException;" + "\n" +
 						"import java.io.File;" + "\n" +
 						"public class Generator  {" + "\n" +
 						"public static void main(String[] args) {" + "\n" +
 						"Scanner scanner = new Scanner( System.in );" + "\n" +
-						"WebDriver driver = new FirefoxDriver();" + "\n";
+						"WebDriver driver = new FirefoxDriver();" + "\n" +
+						"WebElement element = null;" + "\n";
 
 		String footer =
 				"driver.quit();" + "\n" +
