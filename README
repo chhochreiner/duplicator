@@ -31,7 +31,14 @@ USAGE
 - generate the templates with a click on the submit button
 
 # Execute templates
-- copy the downloaded file (Generator.java) into the tests of the selenium runner and execute the run.sh
+- copy the downloaded file (Generator.java) into the tests folder of the selenium runner and execute the run.sh
+
+# Gather information about people
+- there is a rudimentary profile search implemented under http://localhost:8080/wicket/bookmarkable/at.ac.tuwien.ProfileFinder
+- in order to use it, you have to insert a facebook access token, that can be found at the end of URL for a sample call of the Graph API
+- you can enter either names of stored users or individuals;
+- the functionality of the profile finder changes, as the major social networks change or restrict their api
+
 
 
 
